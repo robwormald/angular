@@ -13,6 +13,8 @@ module.exports = function(config) {
       {pattern: 'dist/js/dev/es5/**', included: false, watched: false},
 
       'node_modules/es6-shim/es6-shim.js',
+      // include Angular v1 for upgrade module testing
+      'node_modules/angular/angular.min.js',
 
       // zone-microtask must be included first as it contains a Promise monkey patch
       'node_modules/zone.js/dist/zone-microtask.js',
