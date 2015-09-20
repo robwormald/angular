@@ -1,7 +1,9 @@
 ///<reference path="../../../typings/tsd.d.ts" />
-import {global, isPresent} from 'angular2/src/core/facade/lang';
+import {global, isPresent, isFunction} from 'angular2/src/core/facade/lang';
 // TODO(jeffbcross): use ES6 import once typings are available
 var Subject = require('@reactivex/rxjs/dist/cjs/Subject');
+var Observable = require('@reactivex/rxjs/dist/cjs/Observable');
+var Subscriber = require('@reactivex/rxjs/dist/cjs/Subscriber');
 
 export {Promise};
 
@@ -68,26 +70,24 @@ export class TimerWrapper {
 
 export class ObservableWrapper {
   // TODO(vsavkin): when we use rxnext, try inferring the generic type from the first arg
-  static subscribe<T>(emitter: Observable, onNext: (value: T) => void,
-                      onThrow: (exception: any) => void = null,
-                      onReturn: () => void = null): Object {
-    return emitter.observer({next: onNext, throw: onThrow, return: onReturn});
+  static subscribe<T>(emitter: Observable | Subject, nextOrSubscriber: (value: T) => void | Subscriber,
+                      error: (exception: any) => void = null,
+                      complete: () => void = null): Object {
+    if(nextOrSubscriber && isFunction(nextOrSubscriber)){
+      return emitter.subscribe({next: nextOrSubscriber, error: error, complete: complete});
+    }
+    return emitter.subscribe(nextOrSubscriber);
   }
 
-  static isObservable(obs: any): boolean { return obs instanceof Observable; }
+  static isObservable(obs: any): boolean { return obs instanceof Subject; }
 
   static dispose(subscription: any) { subscription.unsubscribe(); }
 
-  static callNext(emitter: EventEmitter, value: any) { emitter.next(value); }
-
-  static callThrow(emitter: EventEmitter, error: any) { emitter.throw(error); }
-
-  static callReturn(emitter: EventEmitter) { emitter.return (null); }
-}
-
-// TODO: vsavkin change to interface
-export class Observable {
-  observer(generator: any): Object { return null; }
+  static callNext(emitter: EventEmitter | Subject, value: any) { emitter.next(value); }
+  //TODO(robwormald):check with Dart and change to callError
+  static callThrow(emitter: EventEmitter | Subject, error: any) { emitter.error(error); }
+  //TODO(robwormald):check with Dart and change to callComplete
+  static callReturn(emitter: EventEmitter | Subject) { emitter.complete (null); }
 }
 
 /**
@@ -115,33 +115,19 @@ export class Observable {
  *   toggle() {
  *     this.visible = !this.visible;
  *     if (this.visible) {
- *       this.open.next(null);
+ *       this.open.emit(null);
  *     } else {
- *       this.close.next(null);
+ *       this.close.emit(null);
  *     }
  *   }
  * }
  * ```
  *
- * Use Rx.Observable but provides an adapter to make it work as specified here:
- * https://github.com/jhusain/observable-spec
- *
- * Once a reference implementation of the spec is available, switch to it.
  */
-export class EventEmitter extends Observable {
-  _subject = new Subject();
-
-  observer(generator: any): any {
-    return this._subject.subscribe((value) => { setTimeout(() => generator.next(value)); },
-                                   (error) => generator.throw ? generator.throw(error) : null,
-                                   () => generator.return ? generator.return () : null);
+export class EventEmitter extends Subject {
+  emit(value:any): void {
+    this.next(value);
   }
-
-  toRx(): any { return this; }
-
-  next(value: any) { this._subject.next(value); }
-
-  throw(error: any) { this._subject.error(error); }
-
-  return (value?: any) { this._subject.complete(); }
 }
+
+export {Subject, Observable, Subscriber};
