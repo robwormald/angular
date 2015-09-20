@@ -2,7 +2,6 @@
 import {global, isPresent} from 'angular2/src/core/facade/lang';
 // TODO(jeffbcross): use ES6 import once typings are available
 var Subject = require('@reactivex/rxjs/dist/cjs/Subject');
-var Observable = require('@reactivex/rxjs/dist/cjs/Observable');
 
 export {Promise};
 
@@ -69,21 +68,26 @@ export class TimerWrapper {
 
 export class ObservableWrapper {
   // TODO(vsavkin): when we use rxnext, try inferring the generic type from the first arg
-  static subscribe<T>(emitter: Observable | Subject, onNext: (value: T) => void,
-                      onError: (exception: any) => void = null,
-                      onComplete: () => void = null): Object {
-    return emitter.subscribe({next: onNext, error: onError, complete: onComplete});
+  static subscribe<T>(emitter: Observable, onNext: (value: T) => void,
+                      onThrow: (exception: any) => void = null,
+                      onReturn: () => void = null): Object {
+    return emitter.observer({next: onNext, throw: onThrow, return: onReturn});
   }
 
-  static isObservable(obs: any): boolean { return obs instanceof Subject; }
+  static isObservable(obs: any): boolean { return obs instanceof Observable; }
 
   static dispose(subscription: any) { subscription.unsubscribe(); }
 
   static callNext(emitter: EventEmitter, value: any) { emitter.next(value); }
-  //TODO(robwormald): check on Dart and change to 'callError'
-  static callThrow(emitter: EventEmitter, error: any) { emitter.error(error); }
-  //TODO(robwormald): check on Dart and change to 'callComplete'
-  static callReturn(emitter: EventEmitter) { emitter.complete (); }
+
+  static callThrow(emitter: EventEmitter, error: any) { emitter.throw(error); }
+
+  static callReturn(emitter: EventEmitter) { emitter.return (null); }
+}
+
+// TODO: vsavkin change to interface
+export class Observable {
+  observer(generator: any): Object { return null; }
 }
 
 /**
@@ -111,18 +115,33 @@ export class ObservableWrapper {
  *   toggle() {
  *     this.visible = !this.visible;
  *     if (this.visible) {
- *       this.open.emit(null);
+ *       this.open.next(null);
  *     } else {
- *       this.close.emit(null);
+ *       this.close.next(null);
  *     }
  *   }
  * }
  * ```
  *
- * EventEmitters extend from Rx.Subject, and should only be used when "external" access is needed.
+ * Use Rx.Observable but provides an adapter to make it work as specified here:
+ * https://github.com/jhusain/observable-spec
+ *
+ * Once a reference implementation of the spec is available, switch to it.
  */
-export class EventEmitter extends Subject {
-  emit(value: any){
-    this.next(value);
+export class EventEmitter extends Observable {
+  _subject = new Subject();
+
+  observer(generator: any): any {
+    return this._subject.subscribe((value) => { setTimeout(() => generator.next(value)); },
+                                   (error) => generator.throw ? generator.throw(error) : null,
+                                   () => generator.return ? generator.return () : null);
   }
+
+  toRx(): any { return this; }
+
+  next(value: any) { this._subject.next(value); }
+
+  throw(error: any) { this._subject.error(error); }
+
+  return (value?: any) { this._subject.complete(); }
 }
