@@ -68,21 +68,21 @@ export class TimerWrapper {
 
 export class ObservableWrapper {
   // TODO(vsavkin): when we use rxnext, try inferring the generic type from the first arg
-  static subscribe<T>(emitter: Observable, onNext: (value: T) => void,
+  static subscribe<T>(emitter: Observable | Subject, onNext: (value: T) => void,
                       onThrow: (exception: any) => void = null,
                       onReturn: () => void = null): Object {
-    return emitter.observer({next: onNext, throw: onThrow, return: onReturn});
+    return emitter.subscribe({next: onNext, error: onThrow, complete: onReturn});
   }
 
-  static isObservable(obs: any): boolean { return obs instanceof Observable; }
+  static isObservable(obs: any): boolean { return obs instanceof Subject; }
 
   static dispose(subscription: any) { subscription.unsubscribe(); }
 
   static callNext(emitter: EventEmitter, value: any) { emitter.next(value); }
 
-  static callThrow(emitter: EventEmitter, error: any) { emitter.throw(error); }
+  static callThrow(emitter: EventEmitter, error: any) { emitter.error(error); }
 
-  static callReturn(emitter: EventEmitter) { emitter.return (null); }
+  static callReturn(emitter: EventEmitter) { emitter.complete (null); }
 }
 
 // TODO: vsavkin change to interface
@@ -128,20 +128,11 @@ export class Observable {
  *
  * Once a reference implementation of the spec is available, switch to it.
  */
-export class EventEmitter extends Observable {
-  _subject = new Subject();
-
+export class EventEmitter extends Subject {
+  
   observer(generator: any): any {
-    return this._subject.subscribe((value) => { setTimeout(() => generator.next(value)); },
-                                   (error) => generator.throw ? generator.throw(error) : null,
-                                   () => generator.return ? generator.return () : null);
+    return this.subscribe((value) => { setTimeout(() => generator.next(value)); },
+                                   (error) => generator.error ? generator.error(error) : null,
+                                   () => generator.complete ? generator.complete () : null);
   }
-
-  toRx(): any { return this; }
-
-  next(value: any) { this._subject.next(value); }
-
-  throw(error: any) { this._subject.error(error); }
-
-  return (value?: any) { this._subject.complete(); }
 }
