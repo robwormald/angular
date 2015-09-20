@@ -32,14 +32,14 @@ import {
 } from 'angular2/http';
 
 class SpyObserver extends SpyObject {
-  onNext: Function;
-  onError: Function;
-  onCompleted: Function;
+  next: Function;
+  error: Function;
+  complete: Function;
   constructor() {
     super();
-    this.onNext = this.spy('onNext');
-    this.onError = this.spy('onError');
-    this.onCompleted = this.spy('onCompleted');
+    this.next = this.spy('next');
+    this.error = this.spy('error');
+    this.complete = this.spy('complete');
   }
 }
 
