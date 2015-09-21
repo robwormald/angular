@@ -59,7 +59,7 @@ export class XHRConnection implements Connection {
       
       
       //error event handler
-      let onError = (err) => {
+      let onError = () => {
         var responseOptions = new ResponseOptions({body: err, type: ResponseTypes.Error});
         if (isPresent(baseResponseOptions)) {
           responseOptions = baseResponseOptions.merge(responseOptions);
@@ -73,11 +73,9 @@ export class XHRConnection implements Connection {
       
       _xhr.addEventListener('load', onLoad);
       _xhr.addEventListener('error', onError);
-      //TODO(robwormald):progressObserver events
       
       _xhr.send(this.request.text());
       
-      //disposer function
       return () => {
         _xhr.removeEventListener('load', onLoad);
         _xhr.removeEventListener('error', onError);
@@ -86,6 +84,12 @@ export class XHRConnection implements Connection {
       
     });
   }
+
+  /**
+   * Calls abort on the underlying XMLHttpRequest.
+   * //TODO(robwormald): check we can fully remove in favor of subscriber.unsubscribe()
+   */
+  dispose(): void { /** this._xhr.abort(); */ }
 }
 
 /**
