@@ -6,15 +6,14 @@ import {ResponseOptions, BaseResponseOptions} from '../base_response_options';
 import {Injectable} from 'angular2/src/core/di';
 import {BrowserXhr} from './browser_xhr';
 import {isPresent} from 'angular2/src/core/facade/lang';
-import Observable = require('@reactivex/rxjs/dist/cjs/Observable')
-/**
+import Observable = require('@reactivex/rxjs/dist/cjs/Observable') /**
  * Creates connections using `XMLHttpRequest`. Given a fully-qualified
  * request, an `XHRConnection` will immediately create an `XMLHttpRequest` object and send the
  * request.
  *
  * This class would typically not be created or interacted with directly inside applications, though
  * the {@link MockConnection} may be interacted with in tests.
- */
+ */ 
 export class XHRConnection implements Connection {
   request: Request;
   /**
@@ -24,64 +23,57 @@ export class XHRConnection implements Connection {
   response: Observable<Response>;  // TODO: Make generic of <Response>;
   readyState: ReadyStates;
   constructor(req: Request, browserXHR: BrowserXhr, baseResponseOptions?: ResponseOptions) {
-    
-    
     this.request = req;
     this.response = new Observable(responseObserver => {
-      let _xhr:XMLHttpRequest = browserXHR.build();
+      let _xhr: XMLHttpRequest = browserXHR.build();
       _xhr.open(RequestMethods[req.method].toUpperCase(), req.url);
-      
-      //load event handler
+      // load event handler
       let onLoad = () => {
         // responseText is the old-school way of retrieving response (supported by IE8 & 9)
-        // response/responseType properties were introduced in XHR Level2 spec (supported by IE10)
+        // response/responseType properties were introduced in XHR Level2 spec (supported by
+        // IE10)
         let response = isPresent(_xhr.response) ? _xhr.response : _xhr.responseText;
-        
+
         // normalize IE9 bug (http://bugs.jquery.com/ticket/1450)
         let status = _xhr.status === 1223 ? 204 : _xhr.status;
-        
+
         // fix status code when it is 0 (0 status is undocumented).
         // Occurs when accessing file resources or on Android 4.1 stock browser
         // while retrieving files from application cache.
         if (status === 0) {
           status = response ? 200 : 0;
         }
-        
         var responseOptions = new ResponseOptions({body: response, status: status});
         if (isPresent(baseResponseOptions)) {
           responseOptions = baseResponseOptions.merge(responseOptions);
         }
-        
         responseObserver.next(new Response(responseOptions));
-        //TODO(gdi2290): defer complete if array buffer until done
+        // TODO(gdi2290): defer complete if array buffer until done
         responseObserver.complete();
-       }
-      
-      
-      //error event handler
+      };
+      // error event handler
       let onError = (err) => {
         var responseOptions = new ResponseOptions({body: err, type: ResponseTypes.Error});
         if (isPresent(baseResponseOptions)) {
           responseOptions = baseResponseOptions.merge(responseOptions);
         }
         responseObserver.error(new Response(responseOptions));
-      }
+      };
       
       if (isPresent(req.headers)) {
         req.headers.forEach((value, name) => { _xhr.setRequestHeader(name, value); });
       }
-      
+
       _xhr.addEventListener('load', onLoad);
       _xhr.addEventListener('error', onError);
-      
+
       _xhr.send(this.request.text());
-      
+
       return () => {
         _xhr.removeEventListener('load', onLoad);
         _xhr.removeEventListener('error', onError);
         _xhr.abort();
       }
-      
     });
   }
 
@@ -89,7 +81,8 @@ export class XHRConnection implements Connection {
    * Calls abort on the underlying XMLHttpRequest.
    * //TODO(robwormald): check we can fully remove in favor of subscriber.unsubscribe()
    */
-  dispose(): void { /** this._xhr.abort(); */ }
+  dispose(): void { /** this._xhr.abort(); */
+  }
 }
 
 /**
