@@ -5,9 +5,8 @@ import {Response} from '../static_response';
 import {ResponseOptions, BaseResponseOptions} from '../base_response_options';
 import {Injectable} from 'angular2/src/core/di';
 import {BrowserXhr} from './browser_xhr';
-import {EventEmitter, ObservableWrapper} from 'angular2/src/core/facade/async';
 import {isPresent} from 'angular2/src/core/facade/lang';
-
+import {Observable} from '@reactivex/rxjs'
 /**
  * Creates connections using `XMLHttpRequest`. Given a fully-qualified
  * request, an `XHRConnection` will immediately create an `XMLHttpRequest` object and send the
@@ -22,61 +21,71 @@ export class XHRConnection implements Connection {
    * Response {@link EventEmitter} which emits a single {@link Response} value on load event of
    * `XMLHttpRequest`.
    */
-  response: EventEmitter;  // TODO: Make generic of <Response>;
+  response: Observable<Response>;  // TODO: Make generic of <Response>;
   readyState: ReadyStates;
-  private _xhr;  // TODO: make type XMLHttpRequest, pending resolution of
-                 // https://github.com/angular/ts2dart/issues/230
   constructor(req: Request, browserXHR: BrowserXhr, baseResponseOptions?: ResponseOptions) {
+    
+    
     this.request = req;
-    this.response = new EventEmitter();
-    this._xhr = browserXHR.build();
-    // TODO(jeffbcross): implement error listening/propagation
-    this._xhr.open(RequestMethods[req.method].toUpperCase(), req.url);
-    this._xhr.addEventListener('load', (_) => {
-      // responseText is the old-school way of retrieving response (supported by IE8 & 9)
-      // response/responseType properties were introduced in XHR Level2 spec (supported by IE10)
-      let response = isPresent(this._xhr.response) ? this._xhr.response : this._xhr.responseText;
-
-      // normalize IE9 bug (http://bugs.jquery.com/ticket/1450)
-      let status = this._xhr.status === 1223 ? 204 : this._xhr.status;
-
-      // fix status code when it is 0 (0 status is undocumented).
-      // Occurs when accessing file resources or on Android 4.1 stock browser
-      // while retrieving files from application cache.
-      if (status === 0) {
-        status = response ? 200 : 0;
+    this.response = new Observable(responseObserver => {
+      let _xhr:XMLHttpRequest = browserXHR.build();
+      _xhr.open(RequestMethods[req.method].toUpperCase(), req.url);
+      
+      //load event handler
+      let onLoad = () => {
+        // responseText is the old-school way of retrieving response (supported by IE8 & 9)
+        // response/responseType properties were introduced in XHR Level2 spec (supported by IE10)
+        let response = isPresent(_xhr.response) ? _xhr.response : _xhr.responseText;
+        
+        // normalize IE9 bug (http://bugs.jquery.com/ticket/1450)
+        let status = _xhr.status === 1223 ? 204 : _xhr.status;
+        
+        // fix status code when it is 0 (0 status is undocumented).
+        // Occurs when accessing file resources or on Android 4.1 stock browser
+        // while retrieving files from application cache.
+        if (status === 0) {
+          status = response ? 200 : 0;
+        }
+        
+        var responseOptions = new ResponseOptions({body: response, status: status});
+        if (isPresent(baseResponseOptions)) {
+          responseOptions = baseResponseOptions.merge(responseOptions);
+        }
+        
+        responseObserver.next(new Response(responseOptions));
+        //TODO(gdi2290): defer complete if array buffer until done
+        responseObserver.return();
+       }
+      
+      
+      //error event handler
+      let onError = (err) => {
+        var responseOptions = new ResponseOptions({body: err, type: ResponseTypes.Error});
+        if (isPresent(baseResponseOptions)) {
+          responseOptions = baseResponseOptions.merge(responseOptions);
+        }
+        responseObserver.error(new Response(responseOptions));
       }
-
-      var responseOptions = new ResponseOptions({body: response, status: status});
-      if (isPresent(baseResponseOptions)) {
-        responseOptions = baseResponseOptions.merge(responseOptions);
+      
+      if (isPresent(req.headers)) {
+        req.headers.forEach((value, name) => { _xhr.setRequestHeader(name, value); });
       }
-
-      ObservableWrapper.callNext(this.response, new Response(responseOptions));
-      // TODO(gdi2290): defer complete if array buffer until done
-      ObservableWrapper.callReturn(this.response);
+      
+      _xhr.addEventListener('load', onLoad);
+      _xhr.addEventListener('error', onError);
+      //TODO(robwormald):progressObserver events
+      
+      _xhr.send(this.request.text());
+      
+      //disposer function
+      return () => {
+        _xhr.removeEventListener('load', onLoad);
+        _xhr.removeEventListener('error', onError);
+        _xhr.abort();
+      }
+      
     });
-
-    this._xhr.addEventListener('error', (err) => {
-      var responseOptions = new ResponseOptions({body: err, type: ResponseTypes.Error});
-      if (isPresent(baseResponseOptions)) {
-        responseOptions = baseResponseOptions.merge(responseOptions);
-      }
-      ObservableWrapper.callThrow(this.response, new Response(responseOptions));
-    });
-    // TODO(jeffbcross): make this more dynamic based on body type
-
-    if (isPresent(req.headers)) {
-      req.headers.forEach((value, name) => { this._xhr.setRequestHeader(name, value); });
-    }
-
-    this._xhr.send(this.request.text());
   }
-
-  /**
-   * Calls abort on the underlying XMLHttpRequest.
-   */
-  dispose(): void { this._xhr.abort(); }
 }
 
 /**
