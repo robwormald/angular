@@ -6,7 +6,7 @@ import {ResponseOptions, BaseResponseOptions} from '../base_response_options';
 import {Injectable} from 'angular2/src/core/di';
 import {BrowserXhr} from './browser_xhr';
 import {isPresent} from 'angular2/src/core/facade/lang';
-import {Observable} from '@reactivex/rxjs'
+import Observable = require('@reactivex/rxjs/dist/cjs/Observable')
 /**
  * Creates connections using `XMLHttpRequest`. Given a fully-qualified
  * request, an `XHRConnection` will immediately create an `XMLHttpRequest` object and send the
@@ -54,12 +54,12 @@ export class XHRConnection implements Connection {
         
         responseObserver.next(new Response(responseOptions));
         //TODO(gdi2290): defer complete if array buffer until done
-        responseObserver.return();
+        responseObserver.complete();
        }
       
       
       //error event handler
-      let onError = () => {
+      let onError = (err) => {
         var responseOptions = new ResponseOptions({body: err, type: ResponseTypes.Error});
         if (isPresent(baseResponseOptions)) {
           responseOptions = baseResponseOptions.merge(responseOptions);
