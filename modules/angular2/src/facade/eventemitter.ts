@@ -7,9 +7,12 @@ import {Map} from './collection';
  * 
  */
 export class EventEmitter <T> {
+  
   private _listeners:Map<any,any> = new Map();
   
   constructor(){}
+  
+  get listeners():any { return _listeners.values.reduce((all, listeners) => all.concat(listeners),[])}
   
   protected addEventListener(eventName:string, listener:(data: T) => void): void {
     this._listeners.has(eventName) || this._listeners.set(eventName, []);

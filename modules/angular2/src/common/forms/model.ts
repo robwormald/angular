@@ -64,8 +64,14 @@ export abstract class AbstractControl {
   private _parent: ControlGroup | ControlArray;
   private _asyncValidationSubscription;
 
-  constructor(public validator: Function, public asyncValidator: Function) {}
+  constructor(public validator: Function, public asyncValidator: Function) {
+    this.valueChanges = Observable.fromEvent(this._valueChanges, 'change');
+    this.statusChanges = Observable.fromEvent(this._statusChanges, 'change');
+  }
 
+  valueChanges: Observable<any>
+  statusChanges: Observable<any>
+  
   get value(): any { return this._value; }
 
   get status(): string { return this._status; }
@@ -84,10 +90,6 @@ export abstract class AbstractControl {
   get touched(): boolean { return this._touched; }
 
   get untouched(): boolean { return !this._touched; }
-
-  get valueChanges(): Observable<any> { return this._valueChanges; }
-
-  get statusChanges(): Observable<any> { return this._statusChanges; }
 
   get pending(): boolean { return this._status == PENDING; }
 
@@ -128,8 +130,8 @@ export abstract class AbstractControl {
     }
 
     if (emitEvent) {
-      ObservableWrapper.callNext(this._valueChanges, this._value);
-      ObservableWrapper.callNext(this._statusChanges, this._status);
+      this._valueChanges.emit('change', this._value);
+      this._statusChanges.emit('change', this._status);
     }
 
     if (isPresent(this._parent) && !onlySelf) {

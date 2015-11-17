@@ -30,8 +30,13 @@ import {Observable, EventEmitter} from 'angular2/src/facade/async';
 export class QueryList<T> {
   private _results: Array<T> = [];
   private _emitter = new EventEmitter();
+  
+  changes: Observable<any>;
+  
+  constructor(){
+    this.changes = ObservableWrapper.fromEmitter(this._emitter, 'change');
+  }
 
-  get changes(): Observable<any> { return this._emitter; }
   get length(): number { return this._results.length; }
   get first(): T { return ListWrapper.first(this._results); }
   get last(): T { return ListWrapper.last(this._results); }
@@ -66,5 +71,5 @@ export class QueryList<T> {
   reset(res: T[]): void { this._results = res; }
 
   /** @internal */
-  notifyOnChanges(): void { this._emitter.next(this); }
+  notifyOnChanges(): void { this._emitter.emit('change', this); }
 }
