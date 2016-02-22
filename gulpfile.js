@@ -57,7 +57,7 @@ function printModulesWarning() {
     console.warn(
         "Pro Tip: Did you know that you can speed up your build by specifying project name(s)?");
     console.warn("         It's like pressing the turbo button in the old days, but better!");
-    console.warn("         Examples: --project=angular2 or --project=angular2,angular2_material");
+    console.warn("         Examples: --projects=angular2 or --projects=angular2,angular2_material");
   }
 }
 
