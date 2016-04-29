@@ -2,7 +2,7 @@ import {
   TEST_BROWSER_STATIC_PLATFORM_PROVIDERS,
   ADDITIONAL_TEST_BROWSER_PROVIDERS
 } from './browser_static';
-import {BROWSER_APP_PROVIDERS} from '../.';
+import {BROWSER_APP_PROVIDERS} from '../index';
 
 
 /**

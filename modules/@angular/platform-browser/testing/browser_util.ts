@@ -2,8 +2,6 @@ import {ListWrapper} from '../src/facade/collection';
 import {getDOM} from '../src/dom/dom_adapter';
 import {isPresent, isString, RegExpWrapper, StringWrapper, RegExp} from '../src/facade/lang';
 
-export var browserDetection: BrowserDetection = null;
-
 export class BrowserDetection {
   private _ua: string;
 
@@ -110,3 +108,5 @@ export function stringifyElement(el): string {
 
   return result;
 }
+
+export var browserDetection: BrowserDetection = new BrowserDetection(null);

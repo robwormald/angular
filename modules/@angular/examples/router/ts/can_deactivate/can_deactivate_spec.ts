@@ -1,4 +1,4 @@
-import {verifyNoBrowserErrors, browser} from '@angular/platform-browser/testing';
+import {verifyNoBrowserErrors, browser} from '@angular/platform-browser/testing_e2e';
 import {expect} from '@angular/core/testing';
 
 function waitForElement(selector: string) {

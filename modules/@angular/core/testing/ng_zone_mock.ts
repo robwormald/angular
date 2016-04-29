@@ -1,5 +1,5 @@
 import {Injectable, NgZone} from '../index';
-import {EventEmitter, ObservableWrapper} from '..//src/facade/async';
+import {EventEmitter, ObservableWrapper} from '../src/facade/async';
 
 /**
  * A mock implementation of {@link NgZone}.

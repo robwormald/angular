@@ -8,55 +8,63 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 100;
 __karma__.loaded = function() {};
 
 System.config({
-  baseURL: '/base/',
+  baseURL: '/base',
   defaultJSExtensions: true,
-  paths: {
+  map: {
     'benchpress/*': 'dist/js/dev/es5/benchpress/*.js',
-    '@angular/*': 'dist/@angular/*.js',
-    'rxjs/*': 'node_modules/rxjs/*.js'
+    '@angular': 'dist/@angular',
+    'rxjs': 'node_modules/rxjs'
   },
   packages: {
-    '@angular/facade': {
-      main: 'index'
-    },
     '@angular/core': {
-      main: 'index'
+      main: 'index.js',
+      defaultExtension: 'js'
     },
     '@angular/compiler': {
-      main: 'index'
+      main: 'index.js',
+      defaultExtension: 'js'
     },
     '@angular/common': {
-      main: 'index'
+      main: 'index.js',
+      defaultExtension: 'js'
     },
-    '@angular/testing': {
-      main: 'index'
+    '@angular/facade': {
+      main: 'index.js',
+      defaultExtension: 'js'
     },
     '@angular/router': {
-      main: 'index'
+      main: 'index.js',
+      defaultExtension: 'js'
     },
     '@angular/upgrade': {
-      main: 'index'
+      main: 'index.js',
+      defaultExtension: 'js'
     },
     '@angular/platform-browser': {
-      main: 'index'
+      main: 'index.js',
+      defaultExtension: 'js'
     },
     '@angular/platform-browser-dynamic': {
-      main: 'index'
-    },
-    // '@angular/platform-browser/testing': {
-    //   main: 'index'
-    // }
+      main: 'index.js',
+      defaultExtension: 'js'
+    }
   }
 });
 
+
 // Set up the test injector, then import all the specs, execute their `main()`
 // method and kick off Karma (Jasmine).
-System.import('@angular/testing').then(function(testing) {
-  return System.import('@angular/testing/browser').then(function(testing_platform_browser) {
-    testing.setBaseTestProviders(testing_platform_browser.TEST_BROWSER_PLATFORM_PROVIDERS,
-                                 testing_platform_browser.TEST_BROWSER_APPLICATION_PROVIDERS);
-  });
-}).then(function() {
+System.import('@angular/core/testing')
+  .then(function(coreTesting){
+    return System.import('@angular/platform-browser/testing')
+      .then(function(browserTesting){
+         coreTesting.setBaseTestProviders(
+          browserTesting.TEST_BROWSER_PLATFORM_PROVIDERS,
+          browserTesting.TEST_BROWSER_APPLICATION_PROVIDERS
+        );
+      });
+  })
+.then(function() {
   return Promise.all(
     Object.keys(window.__karma__.files) // All files served by Karma.
     .filter(onlySpecFiles)
