@@ -1,4 +1,4 @@
-import {Component, Inject, OpaqueToken} from '@angular/core';
+import {Component, Inject, OpaqueToken, ViewChild} from '@angular/core';
 import {NgIf} from '@angular/common';
 
 export const SOME_OPAQUE_TOKEN = new OpaqueToken('opaqueToken');
@@ -26,4 +26,25 @@ export class CompWithProviders {
   directives: [NgIf]
 })
 export class CompWithReferences {
+}
+
+@Component({
+  selector: 'cmp-query-child',
+  template: `
+    <div>Child</div>
+  `,
+  directives: []
+})
+export class CompWithQueryChild {}
+
+
+@Component({
+  selector: 'cmp-query',
+  template: `
+    <cmp-query-child></cmp-query-child>
+  `,
+  directives: [CompWithQueryChild]
+})
+export class CompWithQuery {
+  @ViewChild(CompWithQueryChild) ref:CompWithQueryChild;
 }
