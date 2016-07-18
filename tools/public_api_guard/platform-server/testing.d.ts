@@ -3,7 +3,7 @@ export declare class ServerTestModule {
 }
 
 /** @experimental */
-export declare const serverTestPlatform: () => PlatformRef;
+export declare const serverTestPlatform: (extraProviders?: any[]) => PlatformRef;
 
 /** @deprecated */
 export declare const TEST_SERVER_APPLICATION_PROVIDERS: Array<any>;

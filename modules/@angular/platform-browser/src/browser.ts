@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {COMMON_DIRECTIVES, COMMON_PIPES, PlatformLocation} from '@angular/common';
-import {APPLICATION_COMMON_PROVIDERS, AppModule, AppModuleFactory, AppModuleRef, ExceptionHandler, NgZone, OpaqueToken, PLATFORM_COMMON_PROVIDERS, PLATFORM_INITIALIZER, PlatformRef, ReflectiveInjector, RootRenderer, SanitizationService, Testability, assertPlatform, createPlatform, createPlatformFactory, getPlatform, isDevMode} from '@angular/core';
+import {CommonModule, PlatformLocation} from '@angular/common';
+import {ApplicationModule, ExceptionHandler, NgModule, NgModuleFactory, NgModuleRef, NgZone, OpaqueToken, PLATFORM_CORE_PROVIDERS, PLATFORM_INITIALIZER, PlatformRef, ReflectiveInjector, RootRenderer, SanitizationService, Testability, assertPlatform, createPlatform, createPlatformFactory, getPlatform, isDevMode} from '@angular/core';
 
 import {wtfInit} from '../core_private';
 import {AnimationDriver} from '../src/dom/animation_driver';
@@ -37,7 +37,7 @@ import {DomSanitizationService, DomSanitizationServiceImpl} from './security/dom
  * @experimental API related to bootstrapping are still under review.
  */
 export const BROWSER_PLATFORM_PROVIDERS: Array<any /*Type | Provider | any[]*/> = [
-  PLATFORM_COMMON_PROVIDERS, {provide: PLATFORM_INITIALIZER, useValue: initDomAdapter, multi: true},
+  PLATFORM_CORE_PROVIDERS, {provide: PLATFORM_INITIALIZER, useValue: initDomAdapter, multi: true},
   {provide: PlatformLocation, useClass: BrowserPlatformLocation}
 ];
 
@@ -60,20 +60,7 @@ export const BROWSER_SANITIZATION_PROVIDERS: Array<any> = [
  *
  * @experimental API related to bootstrapping are still under review.
  */
-export const BROWSER_APP_PROVIDERS: Array<any /*Type | Provider | any[]*/> = [
-  APPLICATION_COMMON_PROVIDERS, BROWSER_SANITIZATION_PROVIDERS,
-  {provide: ExceptionHandler, useFactory: _exceptionHandler, deps: []},
-  {provide: DOCUMENT, useFactory: _document, deps: []},
-  {provide: EVENT_MANAGER_PLUGINS, useClass: DomEventsPlugin, multi: true},
-  {provide: EVENT_MANAGER_PLUGINS, useClass: KeyEventsPlugin, multi: true},
-  {provide: EVENT_MANAGER_PLUGINS, useClass: HammerGesturesPlugin, multi: true},
-  {provide: HAMMER_GESTURE_CONFIG, useClass: HammerGestureConfig},
-  {provide: DomRootRenderer, useClass: DomRootRenderer_},
-  {provide: RootRenderer, useExisting: DomRootRenderer},
-  {provide: SharedStylesHost, useExisting: DomSharedStylesHost},
-  {provide: AnimationDriver, useFactory: _resolveDefaultAnimationDriver}, DomSharedStylesHost,
-  Testability, EventManager, ELEMENT_PROBE_PROVIDERS
-];
+export const BROWSER_APP_PROVIDERS: Array<any /*Type | Provider | any[]*/> = [];
 
 /**
  * @experimental API related to bootstrapping are still under review.
@@ -102,16 +89,26 @@ export function _resolveDefaultAnimationDriver(): AnimationDriver {
 }
 
 /**
- * The app module for the browser.
+ * The ng module for the browser.
  *
  * @experimental
  */
-@AppModule({
+@NgModule({
   providers: [
-    BROWSER_APP_PROVIDERS,
+    BROWSER_SANITIZATION_PROVIDERS,
+    {provide: ExceptionHandler, useFactory: _exceptionHandler, deps: []},
+    {provide: DOCUMENT, useFactory: _document, deps: []},
+    {provide: EVENT_MANAGER_PLUGINS, useClass: DomEventsPlugin, multi: true},
+    {provide: EVENT_MANAGER_PLUGINS, useClass: KeyEventsPlugin, multi: true},
+    {provide: EVENT_MANAGER_PLUGINS, useClass: HammerGesturesPlugin, multi: true},
+    {provide: HAMMER_GESTURE_CONFIG, useClass: HammerGestureConfig},
+    {provide: DomRootRenderer, useClass: DomRootRenderer_},
+    {provide: RootRenderer, useExisting: DomRootRenderer},
+    {provide: SharedStylesHost, useExisting: DomSharedStylesHost},
+    {provide: AnimationDriver, useFactory: _resolveDefaultAnimationDriver}, DomSharedStylesHost,
+    Testability, EventManager, ELEMENT_PROBE_PROVIDERS
   ],
-  directives: COMMON_DIRECTIVES,
-  pipes: COMMON_PIPES
+  exports: [CommonModule, ApplicationModule]
 })
 export class BrowserModule {
 }

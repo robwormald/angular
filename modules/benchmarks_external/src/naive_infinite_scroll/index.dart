@@ -7,8 +7,8 @@ import 'scroll_area.dart';
 import 'scroll_item.dart';
 import 'cells.dart';
 
-class MyAppModule extends Module {
-  MyAppModule() {
+class MyNgModule extends Module {
+  MyNgModule() {
     bind(ResourceResolverConfig,
         toValue: new ResourceResolverConfig.resolveRelativeUrls(false));
     bind(App);
@@ -24,5 +24,5 @@ class MyAppModule extends Module {
 }
 
 void main() {
-  applicationFactory().addModule(new MyAppModule()).run();
+  applicationFactory().addModule(new MyNgModule()).run();
 }

@@ -10,10 +10,11 @@ import {Injector} from '../di';
 import {BaseException} from '../facade/exceptions';
 import {ConcreteType, Type, stringify} from '../facade/lang';
 import {ViewEncapsulation} from '../metadata';
-import {AppModuleMetadata} from '../metadata/app_module';
+import {NgModuleMetadata} from '../metadata/ng_module';
 
-import {AppModuleFactory} from './app_module_factory';
 import {ComponentFactory} from './component_factory';
+import {ComponentResolver} from './component_resolver';
+import {NgModuleFactory} from './ng_module_factory';
 
 
 /**
@@ -32,14 +33,16 @@ export class ComponentStillLoadingError extends BaseException {
  * to create {@link ComponentFactory}s, which
  * can later be used to create and render a Component instance.
  *
- * Each `@AppModule` provides an own `Compiler` to its injector,
- * that will use the directives/pipes of the app module for compilation
+ * Each `@NgModule` provides an own `Compiler` to its injector,
+ * that will use the directives/pipes of the ng module for compilation
  * of components.
  * @stable
  */
 export class Compiler {
   /**
    * Returns the injector with which the compiler has been created.
+   *
+   * @internal
    */
   get injector(): Injector {
     throw new BaseException(`Runtime compiler is not loaded. Tried to read the injector.`);
@@ -61,18 +64,18 @@ export class Compiler {
         `Runtime compiler is not loaded. Tried to compile ${stringify(component)}`);
   }
   /**
-   * Compiles the given App Module. All templates of the components listed in `precompile`
+   * Compiles the given NgModule. All templates of the components listed in `precompile`
    * have to be either inline or compiled before via `compileComponentAsync` /
-   * `compileAppModuleAsync`. Otherwise throws a {@link ComponentStillLoadingError}.
+   * `compileNgModuleAsync`. Otherwise throws a {@link ComponentStillLoadingError}.
    */
-  compileAppModuleSync<T>(moduleType: ConcreteType<T>, metadata: AppModuleMetadata = null):
-      AppModuleFactory<T> {
+  compileNgModuleSync<T>(moduleType: ConcreteType<T>, metadata: NgModuleMetadata = null):
+      NgModuleFactory<T> {
     throw new BaseException(
         `Runtime compiler is not loaded. Tried to compile ${stringify(moduleType)}`);
   }
 
-  compileAppModuleAsync<T>(moduleType: ConcreteType<T>, metadata: AppModuleMetadata = null):
-      Promise<AppModuleFactory<T>> {
+  compileNgModuleAsync<T>(moduleType: ConcreteType<T>, metadata: NgModuleMetadata = null):
+      Promise<NgModuleFactory<T>> {
     throw new BaseException(
         `Runtime compiler is not loaded. Tried to compile ${stringify(moduleType)}`);
   }
@@ -83,7 +86,7 @@ export class Compiler {
   clearCache(): void {}
 
   /**
-   * Clears the cache for the given component/appModule.
+   * Clears the cache for the given component/ngModule.
    */
   clearCacheFor(type: Type) {}
 }
@@ -98,7 +101,6 @@ export type CompilerOptions = {
   useJit?: boolean,
   defaultEncapsulation?: ViewEncapsulation,
   providers?: any[],
-  deprecatedAppProviders?: any[]
 }
 
 /**
@@ -114,9 +116,7 @@ export abstract class CompilerFactory {
       useJit: _firstDefined(newOptions.useJit, defaultOptions.useJit),
       defaultEncapsulation:
           _firstDefined(newOptions.defaultEncapsulation, defaultOptions.defaultEncapsulation),
-      providers: _mergeArrays(defaultOptions.providers, newOptions.providers),
-      deprecatedAppProviders:
-          _mergeArrays(defaultOptions.deprecatedAppProviders, newOptions.deprecatedAppProviders)
+      providers: _mergeArrays(defaultOptions.providers, newOptions.providers)
     };
   }
 

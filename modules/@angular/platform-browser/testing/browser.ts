@@ -7,9 +7,9 @@
  */
 
 import {LocationStrategy} from '@angular/common';
-import {APP_ID, AppModule, NgZone, OpaqueToken, PLATFORM_COMMON_PROVIDERS, PLATFORM_INITIALIZER, PlatformRef, ReflectiveInjector, assertPlatform, createPlatform, createPlatformFactory, getPlatform} from '@angular/core';
+import {APP_ID, NgModule, NgZone, OpaqueToken, PLATFORM_CORE_PROVIDERS, PLATFORM_INITIALIZER, PlatformRef, ReflectiveInjector, assertPlatform, createPlatform, createPlatformFactory, getPlatform} from '@angular/core';
 
-import {BROWSER_APP_PROVIDERS, BrowserModule} from '../src/browser';
+import {BrowserModule} from '../src/browser';
 import {BrowserDomAdapter} from '../src/browser/browser_adapter';
 import {AnimationDriver} from '../src/dom/animation_driver';
 import {ELEMENT_PROBE_PROVIDERS} from '../src/dom/debug/ng_probe';
@@ -31,18 +31,14 @@ function createNgZone(): NgZone {
  * @experimental
  */
 export const TEST_BROWSER_PLATFORM_PROVIDERS: Array<any /*Type | Provider | any[]*/> = [
-  PLATFORM_COMMON_PROVIDERS,
+  PLATFORM_CORE_PROVIDERS,
   {provide: PLATFORM_INITIALIZER, useValue: initBrowserTests, multi: true}
 ];
 
 /**
  * @deprecated Use initTestEnvironment with BrowserTestModule instead.
  */
-export const TEST_BROWSER_APPLICATION_PROVIDERS: Array<any /*Type | Provider | any[]*/> = [
-  BROWSER_APP_PROVIDERS, {provide: APP_ID, useValue: 'a'}, ELEMENT_PROBE_PROVIDERS,
-  {provide: NgZone, useFactory: createNgZone},
-  {provide: AnimationDriver, useValue: AnimationDriver.NOOP}
-];
+export const TEST_BROWSER_APPLICATION_PROVIDERS: Array<any /*Type | Provider | any[]*/> = [];
 
 /**
  * Platform for testing
@@ -53,12 +49,12 @@ export const browserTestPlatform =
     createPlatformFactory('browserTest', TEST_BROWSER_PLATFORM_PROVIDERS);
 
 /**
- * AppModule for testing.
+ * NgModule for testing.
  *
  * @stable
  */
-@AppModule({
-  modules: [BrowserModule],
+@NgModule({
+  exports: [BrowserModule],
   providers: [
     {provide: APP_ID, useValue: 'a'}, ELEMENT_PROBE_PROVIDERS,
     {provide: NgZone, useFactory: createNgZone},

@@ -7,11 +7,13 @@
  */
 
 import {PlatformLocation} from '@angular/common';
-import {CompilerFactory, ComponentRef, OpaqueToken, PLATFORM_COMMON_PROVIDERS, PLATFORM_INITIALIZER, PlatformRef, ReflectiveInjector, Type, assertPlatform, coreLoadAndBootstrap, createPlatform, createPlatformFactory, getPlatform} from '@angular/core';
-import {BROWSER_DYNAMIC_TEST_COMPILER_FACTORY} from '@angular/platform-browser-dynamic/testing';
+import {analyzeAppProvidersForDeprecatedConfiguration} from '@angular/compiler';
+import {ApplicationRef, CompilerFactory, ComponentRef, NgModule, OpaqueToken, PLATFORM_CORE_PROVIDERS, PLATFORM_INITIALIZER, PlatformRef, ReflectiveInjector, Type, assertPlatform, bootstrapModule, createPlatform, createPlatformFactory, getPlatform} from '@angular/core';
+import {BROWSER_DYNAMIC_TEST_COMPILER_FACTORY, BrowserDynamicTestModule} from '@angular/platform-browser-dynamic/testing';
 
-import {ReflectionCapabilities, reflector, wtfInit} from '../core_private';
+import {Console, ReflectionCapabilities, reflector, wtfInit} from '../core_private';
 
+import {ConcreteType} from './facade/lang';
 import {Parse5DomAdapter} from './parse5_adapter';
 
 function notSupported(feature: string): Error {
@@ -38,7 +40,7 @@ class ServerPlatformLocation extends PlatformLocation {
  * @experimental
  */
 export const SERVER_PLATFORM_PROVIDERS: Array<any /*Type | Provider | any[]*/> = [
-  PLATFORM_COMMON_PROVIDERS,
+  PLATFORM_CORE_PROVIDERS,
   {provide: PLATFORM_INITIALIZER, useValue: initParse5Adapter, multi: true},
   {provide: PlatformLocation, useClass: ServerPlatformLocation},
 ];
@@ -81,16 +83,35 @@ export const serverDynamicPlatform =
  * serverBootstrap(..., [BROWSER_APP_PROVIDERS, BROWSER_APP_COMPILER_PROVIDERS])
  * ```
  *
- * @deprecated create an {@link AppModule} and use {@link bootstrapModule} with the {@link
+ * @deprecated create an {@link NgModule} and use {@link bootstrapModule} with the {@link
  * serverDynamicPlatform}()
  * instead.
  */
-export function serverBootstrap(
-    appComponentType: Type,
-    providers: Array<any /*Type | Provider | any[]*/>): Promise<ComponentRef<any>> {
+export function serverBootstrap<T>(
+    appComponentType: ConcreteType<T>,
+    customProviders: Array<any /*Type | Provider | any[]*/>): Promise<ComponentRef<T>> {
   console.warn(
-      'serverBootstrap is deprecated. Create an @AppModule and use `bootstrapModule` with the `serverDynamicPlatform()` instead.');
+      'serverBootstrap is deprecated. Create an @NgModule and use `bootstrapModule` with the `serverDynamicPlatform()` instead.');
   reflector.reflectionCapabilities = new ReflectionCapabilities();
-  var appInjector = ReflectiveInjector.resolveAndCreate(providers, serverPlatform().injector);
-  return coreLoadAndBootstrap(appComponentType, appInjector);
+
+  const deprecatedConfiguration = analyzeAppProvidersForDeprecatedConfiguration(customProviders);
+  const compilerOptions = CompilerFactory.mergeOptions(deprecatedConfiguration.compilerOptions);
+  const declarations = [deprecatedConfiguration.moduleDeclarations.concat([appComponentType])];
+
+  @NgModule({
+    providers: customProviders,
+    declarations: declarations,
+    imports: [BrowserDynamicTestModule],
+    precompile: [appComponentType]
+  })
+  class DynamicModule {
+  }
+
+  return bootstrapModule(DynamicModule, serverDynamicPlatform(), compilerOptions)
+      .then((moduleRef) => {
+        const console = moduleRef.injector.get(Console);
+        deprecatedConfiguration.deprecationMessages.forEach((msg) => console.warn(msg));
+        const appRef: ApplicationRef = moduleRef.injector.get(ApplicationRef);
+        return appRef.bootstrap(appComponentType);
+      });
 }

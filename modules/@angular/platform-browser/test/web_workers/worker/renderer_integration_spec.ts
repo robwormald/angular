@@ -66,7 +66,7 @@ export function main() {
       uiRenderStore = new RenderStore();
       var testUiInjector = new TestBed();
       testUiInjector.platform = browserDynamicTestPlatform();
-      testUiInjector.appModule = BrowserTestModule;
+      testUiInjector.ngModule = BrowserTestModule;
       testUiInjector.configureModule({
         providers: [
           Serializer, {provide: RenderStore, useValue: uiRenderStore},
@@ -74,7 +74,7 @@ export function main() {
           {provide: RootRenderer, useExisting: DomRootRenderer}
         ]
       });
-      testUiInjector.initTestAppModule();
+      testUiInjector.initTestNgModule();
       var uiSerializer = testUiInjector.get(Serializer);
       var domRootRenderer = testUiInjector.get(DomRootRenderer);
       workerRenderStore = new RenderStore();

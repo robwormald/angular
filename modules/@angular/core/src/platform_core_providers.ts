@@ -8,7 +8,7 @@
 
 import {Type} from '../src/facade/lang';
 
-import {PLATFORM_CORE_PROVIDERS} from './application_ref';
+import {PlatformRef, PlatformRef_} from './application_ref';
 import {Console} from './console';
 import {Provider} from './di';
 import {Reflector, reflector} from './reflection/reflection';
@@ -25,9 +25,15 @@ var __unused: Type;  // prevent missing use Dart warning.
  * A default set of providers which should be included in any Angular platform.
  * @experimental
  */
-export const PLATFORM_COMMON_PROVIDERS: Array<any|Type|Provider|any[]> = /*@ts2dart_const*/[
-  PLATFORM_CORE_PROVIDERS,
-  /*@ts2dart_Provider*/ {provide: Reflector, useFactory: _reflector, deps: []},
-  /*@ts2dart_Provider*/ {provide: ReflectorReader, useExisting: Reflector}, TestabilityRegistry,
-  Console
+export const PLATFORM_CORE_PROVIDERS: Array<any|Type|Provider|any[]> = [
+  PlatformRef_, {provide: PlatformRef, useExisting: PlatformRef_},
+  {provide: Reflector, useFactory: _reflector, deps: []},
+  {provide: ReflectorReader, useExisting: Reflector}, TestabilityRegistry, Console
 ];
+
+/**
+ * A default set of providers which should be included in any Angular platform.
+ *
+ * @deprecated Use PLATFORM_CORE_PROVIDERS instead!
+ */
+export const PLATFORM_COMMON_PROVIDERS = PLATFORM_CORE_PROVIDERS;

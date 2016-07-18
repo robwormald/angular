@@ -6,14 +6,14 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {COMMON_DIRECTIVES, COMMON_PIPES} from '@angular/common';
-import {CompilerConfig, DirectiveResolver, ViewResolver} from '@angular/compiler';
-import {MockDirectiveResolver, MockViewResolver, OverridingTestComponentBuilder} from '@angular/compiler/testing';
-import {AppModule, Compiler, CompilerFactory, PLATFORM_DIRECTIVES, PLATFORM_PIPES, PlatformRef, Provider, ReflectiveInjector, Type, createPlatformFactory} from '@angular/core';
-import {TestComponentBuilder, TestComponentRenderer} from '@angular/core/testing';
-import {BrowserTestModule, TEST_BROWSER_APPLICATION_PROVIDERS, TEST_BROWSER_PLATFORM_PROVIDERS} from '@angular/platform-browser/testing';
+import {CompilerConfig, DirectiveResolver, NgModuleResolver, ViewResolver, analyzeAppProvidersForDeprecatedConfiguration} from '@angular/compiler';
+import {MockDirectiveResolver, MockNgModuleResolver, MockViewResolver, OverridingTestComponentBuilder} from '@angular/compiler/testing';
+import {Compiler, CompilerFactory, NgModule, PlatformRef, Provider, ReflectiveInjector, Type, createPlatform, createPlatformFactory} from '@angular/core';
+import {TestComponentBuilder, TestComponentRenderer, initTestEnvironment} from '@angular/core/testing';
+import {BrowserTestModule, TEST_BROWSER_PLATFORM_PROVIDERS} from '@angular/platform-browser/testing';
 
-import {BROWSER_APP_COMPILER_PROVIDERS, BROWSER_DYNAMIC_COMPILER_FACTORY, BROWSER_DYNAMIC_PLATFORM_PROVIDERS} from './index';
+import {Console} from './core_private';
+import {BROWSER_DYNAMIC_COMPILER_FACTORY, BROWSER_DYNAMIC_PLATFORM_PROVIDERS} from './index';
 import {DOMTestComponentRenderer} from './testing/dom_test_component_renderer';
 
 export * from './private_export_testing'
@@ -26,7 +26,8 @@ export * from './private_export_testing'
 export const BROWSER_DYNAMIC_TEST_COMPILER_FACTORY = BROWSER_DYNAMIC_COMPILER_FACTORY.withDefaults({
   providers: [
     {provide: DirectiveResolver, useClass: MockDirectiveResolver},
-    {provide: ViewResolver, useClass: MockViewResolver}
+    {provide: ViewResolver, useClass: MockViewResolver},
+    {provide: NgModuleResolver, useClass: MockNgModuleResolver}
   ]
 });
 
@@ -49,12 +50,12 @@ export const browserDynamicTestPlatform =
     createPlatformFactory('browserDynamicTest', BROWSER_DYNAMIC_TEST_PLATFORM_PROVIDERS);
 
 /**
- * AppModule for testing.
+ * NgModule for testing.
  *
  * @stable
  */
-@AppModule({
-  modules: [BrowserTestModule],
+@NgModule({
+  exports: [BrowserTestModule],
   providers: [
     {provide: TestComponentBuilder, useClass: OverridingTestComponentBuilder},
     {provide: TestComponentRenderer, useClass: DOMTestComponentRenderer},
@@ -63,33 +64,36 @@ export const browserDynamicTestPlatform =
 export class BrowserDynamicTestModule {
 }
 
-// Used only as a shim until TEST_BROWSER_DYNAMIC_PLATFORM_PROVIDERS is deprecated.
-const BROWSER_DYNAMIC_TEST_COMPILER_FACTORY_OLD = BROWSER_DYNAMIC_COMPILER_FACTORY.withDefaults({
-  providers: [
-    {provide: DirectiveResolver, useClass: MockDirectiveResolver},
-    {provide: ViewResolver, useClass: MockViewResolver}
-  ],
-  deprecatedAppProviders: [
-    {provide: PLATFORM_DIRECTIVES, useValue: COMMON_DIRECTIVES, multi: true},
-    {provide: PLATFORM_PIPES, useValue: COMMON_PIPES, multi: true}
-  ]
-});
-
 /**
  * @deprecated Use initTestEnvironment with browserDynamicTestPlatform instead.
  */
-export const TEST_BROWSER_DYNAMIC_PLATFORM_PROVIDERS: Array<any /*Type | Provider | any[]*/> = [
-  TEST_BROWSER_PLATFORM_PROVIDERS,
-  BROWSER_DYNAMIC_PLATFORM_PROVIDERS,
-  {provide: CompilerFactory, useValue: BROWSER_DYNAMIC_TEST_COMPILER_FACTORY_OLD},
-];
+export const TEST_BROWSER_DYNAMIC_PLATFORM_PROVIDERS: Array<any /*Type | Provider | any[]*/> =
+    // Note: This is not a real provider but a hack to still support the deprecated
+    // `setBaseTestProviders` method!
+    [(appProviders: any[]) => {
+      const deprecatedConfiguration = analyzeAppProvidersForDeprecatedConfiguration(appProviders);
+      const platformRef = createPlatform(ReflectiveInjector.resolveAndCreate([
+        BROWSER_DYNAMIC_TEST_PLATFORM_PROVIDERS, {
+          provide: CompilerFactory,
+          useValue: BROWSER_DYNAMIC_TEST_COMPILER_FACTORY.withDefaults(
+              deprecatedConfiguration.compilerOptions)
+        }
+      ]));
 
+      @NgModule({
+        exports: [BrowserDynamicTestModule],
+        declarations: [deprecatedConfiguration.moduleDeclarations]
+      })
+      class DynamicTestModule {
+      }
+
+      const testInjector = initTestEnvironment(DynamicTestModule, platformRef);
+      const console: Console = testInjector.get(Console);
+      deprecatedConfiguration.deprecationMessages.forEach((msg) => console.warn(msg));
+    }];
 
 /**
  * @deprecated Use initTestEnvironment with BrowserDynamicTestModule instead.
  */
-export const TEST_BROWSER_DYNAMIC_APPLICATION_PROVIDERS: Array<any /*Type | Provider | any[]*/> = [
-  TEST_BROWSER_APPLICATION_PROVIDERS,
-  {provide: TestComponentBuilder, useClass: OverridingTestComponentBuilder},
-  {provide: TestComponentRenderer, useClass: DOMTestComponentRenderer},
-];
+export const TEST_BROWSER_DYNAMIC_APPLICATION_PROVIDERS: Array<any /*Type | Provider | any[]*/> =
+    [];

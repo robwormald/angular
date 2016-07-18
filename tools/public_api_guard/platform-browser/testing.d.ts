@@ -3,7 +3,7 @@ export declare class BrowserTestModule {
 }
 
 /** @experimental */
-export declare const browserTestPlatform: () => PlatformRef;
+export declare const browserTestPlatform: (extraProviders?: any[]) => PlatformRef;
 
 /** @deprecated */
 export declare const TEST_BROWSER_APPLICATION_PROVIDERS: Array<any>;

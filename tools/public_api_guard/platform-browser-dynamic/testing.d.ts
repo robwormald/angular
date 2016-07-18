@@ -6,7 +6,7 @@ export declare class BrowserDynamicTestModule {
 }
 
 /** @experimental */
-export declare const browserDynamicTestPlatform: () => PlatformRef;
+export declare const browserDynamicTestPlatform: (extraProviders?: any[]) => PlatformRef;
 
 /** @deprecated */
 export declare const TEST_BROWSER_DYNAMIC_APPLICATION_PROVIDERS: Array<any>;
