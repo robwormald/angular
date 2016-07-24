@@ -1,0 +1,1 @@
+{"__symbolic":"module","version":1,"metadata":{"RelativeApp":{"__symbolic":"class","decorators":[{"__symbolic":"call","expression":{"__symbolic":"reference","module":"@angular/core","name":"Component"},"arguments":[{"selector":"relative-app","directives":[{"__symbolic":"reference","module":"./app/my_cmp","name":"MyCmp"}],"template":"component = <my-cmp></my-cmp>"}]}]}}}

@@ -1,0 +1,1 @@
+{"__symbolic":"module","version":1,"metadata":{"RouteConfig":{"__symbolic":"call","expression":{"__symbolic":"reference","module":"../../core_private","name":"makeDecorator"},"arguments":[{"__symbolic":"reference","module":"./route_config_impl","name":"RouteConfig"}]}}}

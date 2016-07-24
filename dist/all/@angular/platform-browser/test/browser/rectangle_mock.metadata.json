@@ -1,0 +1,1 @@
+{"__symbolic":"module","version":1,"metadata":{"createRectangle":{"__symbolic":"function","parameters":["left","top","width","height"],"value":{"left":{"__symbolic":"reference","name":"left"},"top":{"__symbolic":"reference","name":"top"},"width":{"__symbolic":"reference","name":"width"},"height":{"__symbolic":"reference","name":"height"}}}}}

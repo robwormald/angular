@@ -1,0 +1,1 @@
+{"__symbolic":"module","version":1,"metadata":{"FakeRecursiveComp":{"__symbolic":"class","decorators":[{"__symbolic":"error","message":"Reference to non-exported class","line":205,"character":1,"context":{"className":"LeftComp"}}]}}}
