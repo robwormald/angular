@@ -32,9 +32,10 @@ ts_library(
 ts_library(
     name = "render3_elements_lib",
     testonly = 1,
-    srcs = glob(
-        ["elements_spec.ts"]
-    ),
+    srcs = [
+      "elements_spec.ts",
+      "elements_integration_spec.ts"
+    ],
     # TODO(alexeagle): should not be different tsconfig
     tsconfig = "//packages:tsconfig.json",
     deps = [

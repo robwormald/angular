@@ -25,13 +25,7 @@ describe('angular elements integration test', () => {
         }
         t(0, b1('hello ', ctx.name, '!'))
       },
-      factory: () => new HelloWorldComp(),
-      // hostBindings: (directiveIndex:number, elementIndex:number) => {
-      //   const x = m<HelloWorldComp>(directiveIndex)
-
-
-      //   a(elementIndex, 'name', b('fpp'));
-      // }
+      factory: () => new HelloWorldComp()
     })
   }
 
@@ -65,11 +59,6 @@ describe('angular elements integration test', () => {
   })
 
   describe('define', () => {
-
-
-
-    //it('should define a basic element', () => {})
-
 
     it('should create a newable element', () => {
       HelloWorldElement = customElements.get('hello-world');
