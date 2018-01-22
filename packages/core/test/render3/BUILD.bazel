@@ -30,6 +30,20 @@ ts_library(
 )
 
 ts_library(
+    name = "render3_elements_lib",
+    testonly = 1,
+    srcs = glob(
+        ["elements_spec.ts"]
+    ),
+    # TODO(alexeagle): should not be different tsconfig
+    tsconfig = "//packages:tsconfig.json",
+    deps = [
+        "//packages:types",
+        "//packages/core",
+       ],
+)
+
+ts_library(
     name = "render3_node_lib",
     testonly = 1,
     srcs = [
@@ -62,5 +76,24 @@ ts_web_test(
     deps = [
         "//tools/testing:browser",
         ":render3_lib",
+    ],
+)
+
+filegroup(
+    name = "web_platform_test_bootstrap_scripts",
+    # do not sort
+    srcs = [
+      "//:node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"
+    ],
+)
+
+ts_web_test(
+    name = "elements",
+    bootstrap = [
+        ":web_platform_test_bootstrap_scripts",
+    ],
+    # do not sort
+    deps = [
+        ":render3_elements_lib"
     ],
 )

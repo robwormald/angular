@@ -4,8 +4,8 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
     name = "build_bazel_rules_nodejs",
-    remote = "https://github.com/bazelbuild/rules_nodejs.git",
-    tag = "0.3.1",
+    remote = "https://github.com/alexeagle/rules_nodejs.git",
+    commit = "0c0ac4414571ed60bd3f301c50a3ffc8301777f8",
 )
 
 load("@build_bazel_rules_nodejs//:defs.bzl", "check_bazel_version", "node_repositories")

@@ -177,8 +177,10 @@ export function renderComponent<T>(
   try {
     // Create element node at index 0 in data array
     hostElement(hostNode, componentDef);
+
     // Create directive instance with n() and store at index 1 in data array (el is 0)
     component = directiveCreate(1, componentDef.n(), componentDef);
+    componentDef.h(0, 0)
   } finally {
     leaveView(oldView);
   }

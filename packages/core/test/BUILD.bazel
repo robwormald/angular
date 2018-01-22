@@ -71,3 +71,15 @@ ts_web_test(
         ":test_lib",
     ],
 )
+
+ts_web_test(
+    name = "test_web_elements",
+    bootstrap = [
+        "//:web_test_bootstrap_scripts",
+    ],
+    # do not sort
+    deps = [
+        "//tools/testing:browser",
+        ":test_lib",
+    ],
+)

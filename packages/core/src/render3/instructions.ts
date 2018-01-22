@@ -294,7 +294,11 @@ function resetApplicationState() {
 export function renderTemplate<T>(
     hostNode: RElement, template: ComponentTemplate<T>, context: T,
     providedRendererFactory: RendererFactory3, host: LElementNode | null): LElementNode {
-  if (host == null) {
+      let stateSaved = false;
+      let savedPreviousOrParentNode: LNode|null = previousOrParentNode;
+      let savedIsParent = isParent;
+      if (host == null) {
+        stateSaved = true;
     resetApplicationState();
     rendererFactory = providedRendererFactory;
     host = createLNode(
@@ -305,8 +309,50 @@ export function renderTemplate<T>(
   const hostView = host.data !;
   ngDevMode && assertNotEqual(hostView, null, 'hostView');
   renderComponentOrTemplate(host, hostView, context, template);
+  if (stateSaved) {
+    previousOrParentNode = savedPreviousOrParentNode;
+    isParent = savedIsParent;
+  }
   return host;
 }
+
+export function createTemplateInstance<T>(hostNode:RElement, template:ComponentTemplate<T>, initialState:T = {} as T){
+
+  let stateSaved = false;
+  let savedPreviousOrParentNode: LNode|null = previousOrParentNode;
+  let savedIsParent = isParent;
+  resetApplicationState();
+  rendererFactory = {
+    createRenderer(){
+      return document;
+    }
+  }
+  const host = createLNode(null, LNodeFlags.Element, hostNode,createLView(
+        -1, rendererFactory.createRenderer(null, null), getOrCreateTView(template)));
+
+  const hostView = host.data !;
+  ngDevMode && assertNotEqual(hostView, null, 'hostView');
+  renderComponentOrTemplate(host, hostView, initialState, template);
+  previousOrParentNode = savedPreviousOrParentNode;
+  isParent = savedIsParent;
+
+
+  return {
+    update(state:T){
+      renderComponentOrTemplate(host, hostView, state, template);
+    }
+  }
+}
+
+export function defineTemplate<T>(template:ComponentTemplate<T>){
+  console.log('define template')
+  return {
+    instantiate(hostNode:RElement, initialState?:T){
+      return createTemplateInstance(hostNode, template, initialState);
+    }
+  }
+}
+
 
 export function renderComponentOrTemplate<T>(
     node: LElementNode, hostView: LView, componentOrContext: T, template?: ComponentTemplate<T>) {

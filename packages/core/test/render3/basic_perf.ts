@@ -8,8 +8,10 @@
 
 import {C, E, T, V, cR, cr, defineComponent, e, v} from '../../src/render3/index';
 
-import {document, renderComponent} from './render_util';
+import {defineNgElement} from '../../src/render3/ng_element';
 
+import {document, renderComponent} from './render_util';
+console.log('running IV test')
 describe('iv perf test', () => {
 
   const count = 100000;
