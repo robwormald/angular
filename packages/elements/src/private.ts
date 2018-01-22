@@ -1,0 +1,20 @@
+export {
+  ɵdefineComponent as defineComponent ,
+  ɵdetectChanges as detectChanges,
+  ɵrenderComponent as renderComponent,
+  ɵC as C,
+  ɵE as E,
+  ɵL as L,
+  ɵT as T,
+  ɵV as V,
+  ɵb as b,
+  ɵb1 as b1,
+  ɵcR as cR,
+  ɵcr as cr,
+  ɵe as e,
+  ɵp as p,
+  ɵs as s,
+  ɵt as t,
+  ɵv as v,
+} from '@angular/core';
+

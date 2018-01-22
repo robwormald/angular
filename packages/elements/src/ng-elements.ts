@@ -7,7 +7,7 @@
  */
 
 import {ComponentFactoryResolver, NgModuleRef, Type} from '@angular/core';
-import {DOCUMENT} from '@angular/platform-browser';
+//import {DOCUMENT} from '@angular/platform-browser';
 
 import {NgElement} from './ng-element';
 import {NgElementApplicationContext} from './ng-element-application-context';
@@ -19,8 +19,8 @@ import {scheduler, throwError} from './utils';
  * @experimental
  */
 export class NgElements<T> {
-  private doc = this.moduleRef.injector.get<Document>(DOCUMENT);
-  private definitions = new Map<string, NgElementConstructorInternal<any, any>>();
+  private doc = document;
+  private definitions = new Map/**<string, NgElementConstructorInternal<any, any>>(); **/
   private upgradedElements = new Set<NgElement<any>>();
   private appContext = new NgElementApplicationContext(this.moduleRef.injector);
   private changeDetectionScheduled = false;
@@ -63,7 +63,7 @@ export class NgElements<T> {
     return this.definitions.forEach(cb);
   }
 
-  get<C, P>(selector: string): NgElementConstructor<C, P>|undefined {
+  get<C, P>(selector: string): NgElementConstructor<C, P> {
     return this.definitions.get(selector);
   }
 

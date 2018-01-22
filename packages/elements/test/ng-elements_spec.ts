@@ -334,7 +334,7 @@ export function main() {
           expect(() => e.register()).toThrowError(errorMessage);
           expect(() => e.register(null as any)).toThrowError(errorMessage);
         } finally {
-          Object.defineProperty(window, 'customElements', originalDescriptor);
+          //Object.defineProperty(window, 'customElements', originalDescriptor);
         }
       });
     });
