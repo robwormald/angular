@@ -14,7 +14,9 @@ import {EmbeddedViewRef as viewEngine_EmbeddedViewRef} from '../linker/view_ref'
 
 import {assertNotNull} from './assert';
 import {renderComponent} from './component'
-import {NG_HOST_SYMBOL, createError, createLView, directiveCreate, enterView, hostElement, leaveView, locateHostElement, renderComponentOrTemplate, renderTemplate, defineTemplate} from './instructions';
+import {NG_HOST_SYMBOL, createError, createLView, directiveCreate, enterView, hostElement, leaveView, locateHostElement, renderComponentOrTemplate, renderTemplate, container as C,
+  containerRefreshStart as cR,
+  containerRefreshEnd as cr,} from './instructions';
 import {ComponentDef, ComponentType, TypedComponentDef} from './interfaces/definition';
 import {LElementNode} from './interfaces/node';
 import {RElement, Renderer3, RendererFactory3, domRendererFactory3} from './interfaces/renderer';
@@ -80,28 +82,38 @@ function setBaseElement(ctor:any){
 
 function defineNgHostElement<T>(Base:typeof HTMLElement, componentType:ComponentType<T>){
 
+  function componentTemplate(context:T, cm:boolean){
+
+      componentType.ngComponentDef.template(context, cm);
+
+
+  }
+
   const def = componentType.ngComponentDef;
+  const attrs = Object.keys(def.inputs);
 
   return class NgHostElement extends Base {
     static is = def.tag;
+    static observedAttributes =attrs
     component:T;
     hostNode:LElementNode;
+    dirty = false
     _upgrade(){
-      if(this.hostNode){
-        return;
+      if(!this.hostNode){
+        this.component = def.n();
+        this.hostNode = renderTemplate(this, componentTemplate, this.component, domRendererFactory3, this.hostNode);
+        this.dirty = false;
       }
-      this.component = renderComponent(componentType, {
-        host: (this.shadowRoot as any) || this,
-        features: []
-      });
-      this.hostNode = (this.component as any)[NG_HOST_SYMBOL] as LElementNode;
     }
     _render(){
-      if(!this.component){
-        this._upgrade();
+      if(this.dirty){
+        renderTemplate(this, componentTemplate, this.component, domRendererFactory3, this.hostNode);
+        this.dirty = false;
       }
-      renderComponentOrTemplate(this.hostNode, this.hostNode.view, this.component);
-
+    }
+    _updateProp(key:string, value:any){
+      (this.component as any)[key] = value;
+      this.dirty = true;
     }
     _destroy(){}
 
@@ -112,6 +124,12 @@ function defineNgHostElement<T>(Base:typeof HTMLElement, componentType:Component
     }
     disconnectedCallback(){
       this._destroy();
+    }
+    attributeChangedCallback(key:string, oldValue:any, newValue:string, namespace?:string){
+      if(!this.hostNode){
+        this._upgrade();
+      }
+      this._updateProp(key, newValue);
     }
   }
 }
@@ -155,7 +173,7 @@ export function detectChanges<T>(component: T) {
   const hostNode = (component as any)[NG_HOST_SYMBOL] as LElementNode;
   ngDevMode && assertNotNull(hostNode.data, 'hostNode.data');
   //console.log(component)
-  renderComponentOrTemplate(hostNode, hostNode.view, component, );
+ // renderTemplate(hostNode, hostNode.view, component, );
   isDirty = false;
 }
 

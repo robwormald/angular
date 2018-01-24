@@ -18,7 +18,7 @@ import { DirectiveType } from '../../src/render3/interfaces/definition';
 describe('angular elements:', () => {
 
   class TodoApp {
-
+    newTodoText: string;
     constructor(){
       console.log('todo app constructor')
     }
@@ -26,6 +26,12 @@ describe('angular elements:', () => {
     createTodo(event:CustomEvent){
       console.log('creating!')
     }
+
+    updateNewTodoText(text:string){
+      console.log('update', text);
+      this.newTodoText = text;
+    }
+
     static ngComponentDef = defineComponent({
       tag: 'todo-app',
       //<h3>Todo App</h3>
@@ -39,13 +45,14 @@ describe('angular elements:', () => {
           }
           e();
           E(2, 'todo-input');
-           L('create', ctx.createTodo.bind(ctx));
+           L('input', (e:KeyboardEvent) => ctx.updateNewTodoText.bind(ctx)(e.detail));
           e();
-          E(3, 'todo-list');
-          e();
-          E(4, 'button');
+          E(3, 'button');
             L('click', ctx.createTodo.bind(ctx));
           e();
+          E(4, 'todo-list');
+          e();
+
         }
 
       },
@@ -56,10 +63,15 @@ describe('angular elements:', () => {
   }
 
   class TodoInput {
+    onChange($event:KeyboardEvent){
+      console.log($event);
+    }
     static ngComponentDef = defineComponent({
       tag: 'todo-input',
       template(ctx:TodoInput, cm:boolean){
-
+        E(0, 'input', ['type', 'text']);
+          L('input', ctx.onChange.bind(ctx));
+        e();
       },
       factory(){
         return new TodoInput();
@@ -79,7 +91,13 @@ describe('angular elements:', () => {
     })
   }
 
+  interface Todo {
+    text: string;
+    completed: false;
+  }
+
   class TodoList {
+    todos: Todo[]
     static ngComponentDef = defineComponent({
       tag: 'todo-list',
       template(ctx:TodoList, cm:boolean){
@@ -93,7 +111,6 @@ describe('angular elements:', () => {
 
   [TodoInput, TodoList, TodoItem, TodoApp].forEach(type => {
     const Comp = defineNgElement(type as any);
-    console.log(Comp.is)
     customElements.define(Comp.is, Comp);
   });
 
@@ -119,13 +136,14 @@ describe('angular elements:', () => {
 
       app = new TodoAppCtor();
 
-      console.log(app)
+      (app as any)._upgrade();
       container!.appendChild(app);
+      console.log(app)
 
       expect(app).toBeDefined();
-     // expect(app.querySelector('todo-list')).toBeDefined();
-    //expect(app.querySelector('button')).toBeDefined();
-      //(app.querySelector('button') as HTMLButtonElement).click();
+      expect(app.querySelector('todo-list')).toBeDefined();
+      expect(app.querySelector('button')).toBeDefined();
+      (app.querySelector('button') as HTMLButtonElement).click();
 
     });
 

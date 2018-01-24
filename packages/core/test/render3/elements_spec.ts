@@ -9,8 +9,8 @@
 import {defineNgElement} from '../../src/render3/ng_element';
 import {E, getHostElement, p , a, P ,T, b, b1, e,  markDirty, t, defineComponent, renderComponent, m, V, v, r, s} from '../../src/render3/index';
 import { DirectiveType } from '../../src/render3/interfaces/definition';
-
-
+declare var ngDevMode:any;
+ngDevMode = false;
 
 
 describe('angular elements integration test', () => {
@@ -25,7 +25,10 @@ describe('angular elements integration test', () => {
         }
         t(0, b1('hello ', ctx.name, '!'))
       },
-      factory: () => new HelloWorldComp()
+      factory: () => new HelloWorldComp(),
+      inputs: {
+        'name': 'name'
+      }
     })
   }
 
@@ -60,6 +63,11 @@ describe('angular elements integration test', () => {
 
   describe('define', () => {
 
+    let count = 500;;
+
+
+
+
     it('should create a newable element', () => {
       HelloWorldElement = customElements.get('hello-world');
       const el = new HelloWorldElement();
@@ -79,25 +87,102 @@ describe('angular elements integration test', () => {
 
     });
 
-    it('should render 500 of em', () => {
+    it('should render 500 as custom elements', () => {
       const start = performance.now();
-      for(let i = 0; i < 500; i++){
+      for(let i = 0; i < count; i++){
         const el = new HelloWorldElement();
         container.appendChild(el);
       }
-      console.log(performance.now() - start);
+      console.log('custom-element', performance.now() - start);
     });
 
-    it('should render 500 of em', () => {
+    it('should render n as custom elements with upgrade', () => {
       const start = performance.now();
-      for(let i = 0; i < 500; i++){
-        const el = document.createElement('hello-world2');
-        renderComponent(HelloWorldComp2, {host: el});
-
+      for(let i = 0; i < count; i++){
+        const el = new HelloWorldElement();
+        el._upgrade();
         container.appendChild(el);
       }
-      console.log(performance.now() - start);
+      console.log('custom-element:_upgrade', performance.now() - start);
     });
+
+    it('should render n as custom elements with createElement', () => {
+      const start = performance.now();
+      for(let i = 0; i < count; i++){
+        const el = document.createElement('hello-world');
+        container.appendChild(el);
+      }
+      console.log('custom-element:createElement', performance.now() - start);
+    });
+
+    it('should render n as custom elements with DocumentFragment', () => {
+      const start = performance.now();
+      let frag = new DocumentFragment();
+      for(let i = 0; i < count; i++){
+        const el = new HelloWorldElement();
+        //el._upgrade();
+        frag.appendChild(el);
+      }
+      container.appendChild(frag);
+      console.log('custom-element:fragment', performance.now() - start);
+    });
+
+    it('should render n as custom elements with DocumentFragment with upgrade', () => {
+      const start = performance.now();
+      let frag = new DocumentFragment();
+      for(let i = 0; i < count; i++){
+        const el = new HelloWorldElement();
+        el._upgrade();
+        frag.appendChild(el);
+      }
+      container.appendChild(frag);
+      console.log('custom-element:fragment-upgrade', performance.now() - start);
+    });
+
+
+    it('should render n with renderComponent', () => {
+      const start = performance.now();
+      for(let i = 0; i < count; i++){
+        const el = document.createElement('hello-world2');
+        renderComponent(HelloWorldComp2, {host: el});
+        container.appendChild(el);
+      }
+      console.log('renderComponent', performance.now() - start);
+    });
+
+
+
+
+    it('should render n as renderComponent with DocumentFragment', () => {
+      const start = performance.now();
+      let frag = new DocumentFragment();
+      for(let i = 0; i < count; i++){
+        const el = document.createElement('hello-world2');
+        renderComponent(HelloWorldComp2, {host: el});
+        frag.appendChild(el);
+      }
+
+      container.appendChild(frag);
+      console.log('renderComponent:fragment', performance.now() - start);
+    });
+
+    it('should render n with renderComponent2', () => {
+      const start = performance.now();
+      for(let i = 0; i < count; i++){
+        const el = document.createElement('hello-world2');
+        renderComponent(HelloWorldComp2, {host: el});
+        container.appendChild(el);
+      }
+      console.log('renderComponent2', performance.now() - start);
+    });
+
+
+
+
+
+  });
+
+  it('should work with props and attributes', () => {
 
   });
 });
