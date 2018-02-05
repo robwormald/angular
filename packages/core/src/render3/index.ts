@@ -86,3 +86,5 @@ export {
 };
 export {createComponentRef, detectChanges, getHostElement, markDirty, renderComponent};
 export {CssSelector} from './interfaces/projection';
+
+export {registerComponent} from './ng_element';
