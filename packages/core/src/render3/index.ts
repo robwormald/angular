@@ -146,6 +146,9 @@ export {
   pureFunctionV as fV,
 } from './pure_function';
 
+export {
+  withNgElement
+} from './ng_element';
 
 // clang-format on
 

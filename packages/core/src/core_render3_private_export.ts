@@ -110,6 +110,7 @@ export {
   iM as ɵiM,
   I18nInstruction as ɵI18nInstruction,
   I18nExpInstruction as ɵI18nExpInstruction,
+  withNgElement as ɵwithNgElement
 } from './render3/index';
 export {NgModuleDef as ɵNgModuleDef} from './metadata/ng_module';
 export {

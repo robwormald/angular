@@ -22,10 +22,6 @@
         and uglify, however special flags were passed to uglify to prevent inlining and
         property renaming.
     -->
-    <script>
-        document.write('<script src="' +
-          (document.location.search.endsWith('debug') ? '/bundle.min_debug.js' : '/bundle.min.js') +
-          '"></' + 'script>');
-    </script>
+    <script src="bundle.es6.js"></script>
   </body>
 </html>

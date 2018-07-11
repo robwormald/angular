@@ -64,9 +64,13 @@ jasmine_node_test(
     ],
 )
 
+
+
 ts_web_test_suite(
     name = "render3_web",
     deps = [
+      "//:node_modules/@webcomponents/custom-elements/src/native-shim.js",
+
         ":render3_lib",
     ],
 )

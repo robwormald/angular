@@ -13,6 +13,7 @@
  */
 export {NgElement, NgElementConfig, NgElementConstructor, WithProperties, createCustomElement} from './src/create-custom-element';
 export {NgElementStrategy, NgElementStrategyEvent, NgElementStrategyFactory} from './src/element-strategy';
+export {withNgComponent} from './src/renderer';
 export {VERSION} from './src/version';
-
+export {withNgElement, defineNgElement} from './src/render3/index';
 // This file only reexports content of the `src` folder. Keep it that way.

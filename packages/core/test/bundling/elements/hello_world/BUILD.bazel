@@ -8,7 +8,7 @@ load("//tools/http-server:http_server.bzl", "http_server")
 
 ng_module(
     name = "hello_world",
-    srcs = ["index.ts"],
+    srcs = ["hello-world.ts"],
     tags = ["ivy-only"],
     deps = [
         "//packages/core",
@@ -23,7 +23,7 @@ ng_rollup_bundle(
     # Here, the rule implementation is looking in an execroot where the layout
     # has an "external" directory for external dependencies.
     # This should probably start with "angular/" and let the rule deal with it.
-    entry_point = "packages/core/test/bundling/hello_world/index.js",
+    entry_point = "packages/core/test/bundling/elements/hello_world/hello-world.js",
     tags = ["ivy-only"],
     deps = [
         ":hello_world",
@@ -38,7 +38,6 @@ ts_library(
     deps = [
         "//packages:types",
         "//packages/core/testing",
-        "//packages/private/testing",
     ],
 )
 
