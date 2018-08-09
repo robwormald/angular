@@ -1,0 +1,52 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//tools:defaults.bzl", "ng_module", "ts_library")
+load("//tools/symbol-extractor:index.bzl", "js_expected_symbol_test")
+load("//packages/bazel/src:ng_rollup_bundle.bzl", "ng_rollup_bundle")
+load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+load("//tools/http-server:http_server.bzl", "http_server")
+
+filegroup(
+    name = "paper_styles",
+    # do not sort
+    data = glob(["fonts/**","styles/**", "elements/**/*.css"])
+)
+
+
+ng_rollup_bundle(
+    name = "shop_app_bundle",
+    # TODO(alexeagle): This is inconsistent.
+    # We try to teach users to always have their workspace at the start of a
+    # path, to disambiguate from other workspaces.
+    # Here, the rule implementation is looking in an execroot where the layout
+    # has an "external" directory for external dependencies.
+    # This should probably start with "angular/" and let the rule deal with it.
+    entry_point = "packages/elements/examples/shop/elements/shop-app/shop-app.js",
+    tags = ["ivy-only"],
+    deps = [
+       "//packages/elements/examples/shop/elements/app-layout",
+        "//packages/elements/examples/shop/elements/shop-app",
+        "//packages/core",
+        "//packages/elements/platform",
+    ],
+)
+
+ts_library(
+    name = "test_lib",
+    testonly = 1,
+    srcs = glob(["*_spec.ts"]),
+    deps = [
+        "//packages:types",
+        "//packages/core/testing",
+    ],
+)
+
+http_server(
+    name = "devserver",
+    data = [
+        "index.html",
+        ":shop_app_bundle.es6.js",
+        ":paper_styles",
+        "//packages/elements/examples/shop/elements/shop-app:styles"
+      ],
+)

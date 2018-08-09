@@ -1,0 +1,12 @@
+{
+  "name": "@angular/elements/platform",
+  "typings": "./platform.d.ts",
+  "main": "../bundles/platform.umd.js",
+  "module": "../fesm5/platform.js",
+  "es2015": "../fesm2015/platform.js",
+  "esm5": "../esm5/ng-element/platform.js",
+  "esm2015": "../esm2015/ng-element/platform.js",
+  "fesm5": "../fesm5/platform.js",
+  "fesm2015": "../fesm2015/platform.js",
+  "sideEffects": false
+}

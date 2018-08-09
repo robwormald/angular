@@ -1,0 +1,24 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//tools:defaults.bzl", "ng_module", "ts_library")
+load("//tools/symbol-extractor:index.bzl", "js_expected_symbol_test")
+load("//packages/bazel/src:ng_rollup_bundle.bzl", "ng_rollup_bundle")
+load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+load("//tools/http-server:http_server.bzl", "http_server")
+
+ng_module(
+    name = "shop-app",
+    srcs = ["shop-app.ts"],
+    tags = ["ivy-only"],
+    deps = [
+        "//packages/elements/platform",
+        "//packages/elements/examples/shop/elements/app-layout"
+    ],
+    data = []
+)
+
+filegroup(
+    name = "styles",
+    # do not sort
+    data = ["shop-app.css"]
+)

@@ -19,7 +19,7 @@
     "annotateForClosureCompiler": true,
     "strictMetadataEmit": false,
     "skipTemplateCodegen": true,
-    "flatModuleOutFile": "ng-element.js",
-    "flatModuleId": "@angular/elements/ng-element"
+    "flatModuleOutFile": "platform.js",
+    "flatModuleId": "@angular/elements/platform"
   }
 }

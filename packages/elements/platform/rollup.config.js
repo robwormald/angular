@@ -9,12 +9,12 @@
 const globals = {};
 
 module.exports = {
-  entry: '../../../dist/packages-dist/elements/fesm2015/ng-element.js',
-  dest: '../../../dist/packages-dist/elements/bundles/ng-element.umd.js',
+  entry: '../../../dist/packages-dist/elements/fesm2015/platform.js',
+  dest: '../../../dist/packages-dist/elements/bundles/platform.umd.js',
   format: 'umd',
   exports: 'named',
-  amd: {id: '@angular/elements/ng-element'},
-  moduleName: 'ng.element',
+  amd: {id: '@angular/elements/platform'},
+  moduleName: 'ng.elements.platform',
   external: Object.keys(globals),
   globals: globals
 };

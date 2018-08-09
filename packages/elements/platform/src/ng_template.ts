@@ -77,7 +77,7 @@ export class NgHTMLTemplate {
 
  export function defineNgTemplate(templateDefInit:NgTemplateDefInit) {
 
-   return class extends NgHTMLTemplate {
+   return class NgTpl extends NgHTMLTemplate {
      content: DocumentFragment;
      static clone(){
        return new this();

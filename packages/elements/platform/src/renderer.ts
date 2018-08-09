@@ -35,6 +35,7 @@ export class NgStaticTemplateRenderer<C> implements NgElementRenderer {
 
   }
 
+  upgradeElement(ngElementDef:NgElementDef<C>, element:HTMLElement, cb:any){}
   ngUpgrade(upgraded:() => void){
     this.ngRender = this.ngCreateRenderer(this.ngRenderRoot);
     this.ngRender(RenderActions.Create);

@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background-color: #f1f1f1;
+      }
+    </style>
+
+
+  <!-- <link rel="stylesheet" href="styles/color.css">
+  <link rel="stylesheet" href="styles/shadow.css">
+  <link rel="stylesheet" href="styles/theme.css">
+  <link rel="stylesheet" href="styles/typography.css">
+  <link rel="stylesheet" href="styles/fonts.css"> -->
+  <style>
+      body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        font-size: 13px;
+        line-height: 1.5;
+        min-height: 100vh;
+      }
+      /* styling for render while resources are loading */
+      shop-app[unresolved] {
+        /* display: block;
+        min-height: 101vh;
+        line-height: 68px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.3em;
+        color: #202020;
+        padding: 0 16px;
+        overflow: visible; */
+      }
+    </style>
+
+  <script src="shop_app_bundle.es6.js" async defer></script>
+  <title>Elements Shop</title>
+</head>
+<body>
+  <template ng-id="hello-world">Hello World!</template>
+  <shop-app unresolved></shop-app>
+</body>
+</html>

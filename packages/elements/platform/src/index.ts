@@ -10,3 +10,4 @@
 export * from './defs';
 export * from './ng_element';
 export * from './ng_template';
+export * from './html';
