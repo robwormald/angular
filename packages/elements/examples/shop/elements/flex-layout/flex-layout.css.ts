@@ -1,7 +1,6 @@
-import {ngHtml} from '@angular/elements/platform'
+import {ngStyle} from '@angular/elements/platform'
 
-export default ngHtml`
-<style>
+export default ngStyle`
 html {
   --layout: {
     display: -ms-flexbox;
@@ -280,5 +279,4 @@ html {
     left: 0;
   };
 }
-</style>
 `

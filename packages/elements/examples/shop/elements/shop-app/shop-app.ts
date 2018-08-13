@@ -7,25 +7,38 @@
  */
 
 import '../app-layout';
+import { NgElement, withNgElement, NgElementDef, defineNgElement, defineNgTemplate, ngHtml as html, importNgStyles } from '../../../../platform';
 
-import {withNgElement, NgElementDef, defineNgElement, defineNgTemplate } from '../../../../platform';
-
+@NgElement({
+  selector: 'shop-app'
+})
 export class ShopApp extends withNgElement(){
 
   static ngElementDef = defineNgElement({
     selector: 'shop-app',
     upgrade: (elDef:NgElementDef<ShopApp>, element:ShopApp) => {
       element.attachShadow({mode: 'open'});
-      ShopApp.ngTemplateDef.clone().attach(element.shadowRoot!);
+      ShopApp.ngTemplateDef.clone().attach(element.renderRoot);
     }
   });
 
+
+
   static ngTemplateDef = defineNgTemplate({
-    template: `
+    template: html`
+    <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+      }
+      app-header {
+        color: var(--primary-text-color);
+      }
+    </style>
     <app-header-layout fullbleed>
       <app-header slot="header" fixed>
         <app-toolbar>
-          <div main-title>App name</div>
+          <div main-title>Angular</div>
         </app-toolbar>
       </app-header>
       <div size="100">
@@ -33,11 +46,5 @@ export class ShopApp extends withNgElement(){
       </div>
     </app-header-layout>
     `,
-    styleUrls: [
-      'elements/shop-app/shop-app.css',
-    ]
   });
 }
-
-
-customElements.define(ShopApp.ngElementDef.selector, ShopApp);

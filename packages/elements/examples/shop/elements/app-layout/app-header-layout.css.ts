@@ -1,18 +1,19 @@
-import {ngHtml} from '@angular/elements/platform'
+import {ngStyle, importNgStyles} from '@angular/elements/platform'
+import flexStyle from '../flex-layout/flex-layout.css'
+import flexStyleClasses from '../flex-layout/flex-layout-classes.css';
 
-
-export default ngHtml`
-<style>
-  @import '/elements/flex-layout/flex-layout.css';
-  @import '/elements/flex-layout/flex-layout-classes.css';
+export default `
 
   :host {
-    display: block;
+    display: flex;
     position: relative;
     z-index: 0;
   }
   #wrapper ::slotted([slot=header]) {
-    @apply --layout-fixed-top;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 1;
   }
   #wrapper.initializing ::slotted([slot=header]) {
@@ -28,7 +29,11 @@ export default ngHtml`
     position: relative;
   }
   :host([has-scrolling-region]) #wrapper #contentContainer {
-    @apply --layout-fit;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -37,15 +42,18 @@ export default ngHtml`
   }
   :host([fullbleed]) {
     @apply --layout-vertical;
-    @apply --layout-fit;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
   :host([fullbleed]) #wrapper,
   :host([fullbleed]) #wrapper #contentContainer {
-    @apply --layout-vertical;
-    @apply --layout-flex;
+    display:flex;
+    flex-direction:column;
   }
   #contentContainer {
-    /* Create a stacking context here so that all children appear below the header. */
     position: relative;
     z-index: 0;
   }
@@ -54,5 +62,4 @@ export default ngHtml`
       overflow-y: visible;
     }
   }
-  </style>
   `

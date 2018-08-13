@@ -11,48 +11,57 @@
    attach(parentNode:DocumentFragment | ShadowRoot | HTMLElement):void;
  }
 
+ export function ngHtml(parts:TemplateStringsArray, ...values:any[]){
+  const template = document.createElement('template');
+  template.innerHTML = values.reduce((acc, value, idx) => acc + htmlValue(value) + parts[idx + 1] + `
+  `, parts[0]);
+  return template;
+}
+
+export function ngStyle(parts:TemplateStringsArray, ...values:any[]){
+  const template = document.createElement('template');
+  template.innerHTML = `<style>${values.reduce((acc, value, idx) => acc + htmlValue(value) + parts[idx + 1], parts[0])}</style>`;
+  return template;
+}
+
+export function importNgStyles(ngStyleTemplates:HTMLTemplateElement[]){
+  return ngStyleTemplates.reduce((acc, styleTemplate) => {
+    const styleEl = styleTemplate.content.querySelector('style')!;
+    return acc + styleEl.textContent;
+  }, '');
+}
+
+
+function htmlValue(value:HTMLTemplateElement | string) {
+ if (value instanceof HTMLTemplateElement) {
+   return /** @type {!HTMLTemplateElement } */(value).innerHTML;
+ } else {
+   return value;
+ }
+}
+
 
  export interface NgTemplateDefInit {
-  template?: string;
+  template?: string | HTMLTemplateElement;
   styles?:string[];
   styleUrls?: string[];
 }
 
 export class NgHTMLTemplate {
-  static htmlTemplate:HTMLTemplateElement;
   finalized = false;
-  htmlString:string;
-  styles:string[];
-  styleUrls:string[];
+  templateEl:HTMLTemplateElement;
   host!: DocumentFragment | HTMLElement | ShadowRoot;
   constructor(templateDefInit: NgTemplateDefInit){
-    this.htmlString = templateDefInit.template || '';
-    this.styles = templateDefInit.styles || [];
-    this.styleUrls = templateDefInit.styleUrls || [];
-  }
-  prepare(){
-    const ctor = (this.constructor as typeof NgHTMLTemplate);
-
-
-    ctor.htmlTemplate = document.createElement('template');
-    ctor.htmlTemplate.innerHTML = this.htmlString;
-    [...prepareStyles(this.styles), ...prepareStyleUrls(this.styleUrls)]
-      .forEach(el => ctor.htmlTemplate!.content.appendChild(el));
-    this.finalized = true;
-  }
-  addStyle(style:string){
-    this.styles.push(style);
-    this.finalized = false;
-  }
-  addStyleUrl(styleUrl:string){
-    this.styleUrls.push(styleUrl);
-    this.finalized = false;
-  }
-  clone(): DocumentFragment {
-    if(!this.finalized){
-      this.prepare();
+    if(templateDefInit.template instanceof HTMLTemplateElement){
+      this.templateEl = templateDefInit.template;
+    } else {
+      this.templateEl = ngHtml`${templateDefInit.template || ''}`
     }
-    return (this.constructor as typeof NgHTMLTemplate).htmlTemplate!.content.cloneNode(true) as DocumentFragment;
+  }
+
+  clone(): DocumentFragment {
+
+    return this.templateEl!.content.cloneNode(true) as DocumentFragment;
   }
 }
 

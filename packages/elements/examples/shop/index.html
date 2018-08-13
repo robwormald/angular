@@ -13,11 +13,7 @@
     </style>
 
 
-  <!-- <link rel="stylesheet" href="styles/color.css">
-  <link rel="stylesheet" href="styles/shadow.css">
-  <link rel="stylesheet" href="styles/theme.css">
-  <link rel="stylesheet" href="styles/typography.css">
-  <link rel="stylesheet" href="styles/fonts.css"> -->
+  <link rel="stylesheet" href="styles/paper-styles.css">
   <style>
       body {
         margin: 0;
@@ -27,8 +23,8 @@
         min-height: 100vh;
       }
       /* styling for render while resources are loading */
-      shop-app[unresolved] {
-        /* display: block;
+      /* shop-app:not(:defined) {
+        display: block;
         min-height: 101vh;
         line-height: 68px;
         text-align: center;
@@ -37,15 +33,14 @@
         letter-spacing: 0.3em;
         color: #202020;
         padding: 0 16px;
-        overflow: visible; */
-      }
+        overflow: visible;
+      } */
     </style>
 
   <script src="shop_app_bundle.es6.js" async defer></script>
   <title>Elements Shop</title>
 </head>
 <body>
-  <template ng-id="hello-world">Hello World!</template>
-  <shop-app unresolved></shop-app>
+  <shop-app></shop-app>
 </body>
 </html>

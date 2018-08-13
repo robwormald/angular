@@ -46,7 +46,6 @@ http_server(
     data = [
         "index.html",
         ":shop_app_bundle.es6.js",
-        ":paper_styles",
-        "//packages/elements/examples/shop/elements/shop-app:styles"
+        ":paper_styles"
       ],
 )

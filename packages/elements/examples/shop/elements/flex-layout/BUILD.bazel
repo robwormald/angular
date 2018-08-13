@@ -3,12 +3,10 @@ package(default_visibility = ["//visibility:public"])
 load("//tools:defaults.bzl", "ng_module", "ts_library")
 
 ng_module(
-    name = "app-layout",
+    name = "flex-layout",
     srcs = glob(["*.ts"]),
     tags = ["ivy-only"],
     deps = [
         "//packages/elements/platform",
-        "//packages/elements/examples/shop/elements/flex-layout",
-        "//packages/elements/examples/shop/elements/cdk"
     ],
 )

@@ -30,11 +30,10 @@ export interface NgElementRef {
 
 }
 
-export function upgradeNgElement<T extends HTMLElement>(ngElementDef:NgElementDef<T>, element:T, cb:any){
+export function upgradeNgElement<T extends HTMLElement>(ngElementDef:NgElementDef<T>, element:T){
   if(ngElementDef.shadowRoot && !element.shadowRoot){
     element.attachShadow({ mode: 'open' });
   }
-  cb();
 }
 
 export interface NgElementDef<C> {
@@ -44,7 +43,7 @@ export interface NgElementDef<C> {
   template?:(rf:any, ctx:C) => void;
   directiveDefs?:any[];
   pipeDefs?:any[];
-  upgrade(elementDef:NgElementDef<C>, element:HTMLElement, upgradedCb:any):void;
+  upgrade(elementDef:NgElementDef<C>, element:HTMLElement):void;
 }
 
 export interface AsyncNgElementDef<C> extends NgElementDef<C> {
@@ -57,7 +56,7 @@ export function defineNgElement<C>(ngElementDefInit:{
   shadowRoot?: boolean | null;
   directives?: any[];
   pipes?:any[],
-  staticTemplate?:string;
+  staticTemplate?:string | HTMLTemplateElement;
   styles?: string[];
   styleUrls?: string[];
   upgrade?:any;

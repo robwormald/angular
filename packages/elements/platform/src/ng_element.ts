@@ -19,21 +19,22 @@ export interface NgElementRenderer<T> {
 
 export interface NgCustomElementLifecycle extends HTMLElement {
   new(...args: any[]): NgCustomElementLifecycle;
-  connectedCallback(): void;
-  disconnectedCallback(): void;
-  attributeChangedCallback(attr: string, oldValue: string | null, newValue: string | null, namespace: string): void;
-  adoptedCallback(): void;
+  connectedCallback?(): void;
+  disconnectedCallback?(): void;
+  attributeChangedCallback?(attr: string, oldValue: string | null, newValue: string | null, namespace: string): void;
+  adoptedCallback?(): void;
+  ngIsConnected?:boolean;
 
-  ngOnUpgrade(): void;
-  ngOnUpgraded(): void;
+  ngOnUpgrade?(): void;
+  ngOnUpgraded?(): void;
 
-  ngOnConnected(): void;
-  ngOnDisconnected(): void;
+  ngOnConnected?(): void;
+  ngOnDisconnected?(): void;
 
-  __ngUpgrade(): void;
+  __ngUpgrade?(): void;
 }
 
-export type CustomElementConstructor<T = HTMLElement> = new (...args: any[]) => T;
+export type CustomElementConstructor<T = NgCustomElementLifecycle> = new (...args: any[]) => T;
 
 export const enum ElementActions {
   Upgrade,
@@ -85,6 +86,10 @@ export function withNgElement<CEBase extends CustomElementConstructor<NgCustomEl
 
     get renderRoot(){
       return this.shadowRoot || this;
+    }
+
+    get ngIsConnected(){
+      return !!(this._ngFlags & ElementFlags.Connected);
     }
 
     constructor(...args: any[]) {
@@ -144,8 +149,10 @@ export function withNgElement<CEBase extends CustomElementConstructor<NgCustomEl
           return;
         }
         //upgrade the element
+        console.log('ngElement: upgrade');
         this._ngFlags |= ElementFlags.Upgrading;
-        elementDef.upgrade && elementDef.upgrade(elementDef, this, () => this.__ngUpgraded && this.__ngUpgraded());
+        elementDef.upgrade && elementDef.upgrade(elementDef, this);
+        this.__ngUpgraded && this.__ngUpgraded();
       }
     }
     /**

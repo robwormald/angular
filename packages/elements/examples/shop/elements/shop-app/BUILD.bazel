@@ -8,17 +8,12 @@ load("//tools/http-server:http_server.bzl", "http_server")
 
 ng_module(
     name = "shop-app",
-    srcs = ["shop-app.ts"],
+    srcs = ["shop-app.ts", "shop-app.css.ts"],
     tags = ["ivy-only"],
     deps = [
         "//packages/elements/platform",
-        "//packages/elements/examples/shop/elements/app-layout"
+        "//packages/elements/examples/shop/elements/app-layout",
+        "//packages/elements/examples/shop/elements/flex-layout"
     ],
     data = []
-)
-
-filegroup(
-    name = "styles",
-    # do not sort
-    data = ["shop-app.css"]
 )

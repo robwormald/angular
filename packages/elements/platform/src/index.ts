@@ -7,7 +7,7 @@
  */
 
  //experimental ivy elements API
+export * from './decorators';
 export * from './defs';
 export * from './ng_element';
 export * from './ng_template';
-export * from './html';
