@@ -24,6 +24,7 @@ function callablePropDecorator(): FnWithArg<(a: any, b: any) => any> {
 }
 
 export const Component = callableClassDecorator();
+export const NgElement = callableClassDecorator();
 export const Directive = callableClassDecorator();
 export const Injectable = callableClassDecorator();
 export const NgModule = callableClassDecorator();

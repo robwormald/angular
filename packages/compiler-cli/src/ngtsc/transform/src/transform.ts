@@ -225,5 +225,5 @@ function maybeFilterDecorator(
 }
 
 function isFromAngularCore(decorator: Decorator): boolean {
-  return decorator.import !== null && decorator.import.from === '@angular/core';
+  return decorator.import !== null && decorator.import.from.startsWith('@angular/');
 }

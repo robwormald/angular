@@ -1,0 +1,36 @@
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["package.json"])
+
+load("//tools:defaults.bzl", "ng_module", "ng_package")
+
+ng_module(
+    name = "labs",
+    srcs = glob(
+        [
+            "*.ts",
+            "src/**/*.ts",
+        ],
+    ),
+    module_name = "@angular/elements/labs",
+    deps = [
+      "//packages/core"
+    ],
+)
+
+ng_package(
+    name = "npm_package",
+    srcs = glob([
+        "**/*.externs.js",
+        "**/package.json",
+    ]),
+    entry_point = "packages/elements/labs/index.js",
+    packages = [],
+    tags = [
+        "ivy-jit",
+        "release-with-framework",
+    ],
+    deps = [
+        ":labs",
+    ],
+)

@@ -84,7 +84,7 @@ describe('ngtsc behavioral tests', () => {
         "rootDir": ".",
         "baseUrl": ".",
         "declaration": true,
-        "target": "es5",
+        "target": "es2015",
         "module": "es2015",
         "moduleResolution": "node",
         "lib": ["es6", "dom"],
@@ -632,13 +632,13 @@ describe('ngtsc behavioral tests', () => {
     expect(factoryContents).toContain(`import * as i0 from '@angular/core';`);
     expect(factoryContents).toContain(`import { NotAModule, TestModule } from './test';`);
     expect(factoryContents)
-        .toContain(`export var TestModuleNgFactory = new i0.ɵNgModuleFactory(TestModule);`);
+        .toContain(`export const TestModuleNgFactory = new i0.ɵNgModuleFactory(TestModule);`);
     expect(factoryContents).not.toContain(`NotAModuleNgFactory`);
     expect(factoryContents).not.toContain('ɵNonEmptyModule');
 
     const emptyFactory = getContents('empty.ngfactory.js');
     expect(emptyFactory).toContain(`import * as i0 from '@angular/core';`);
-    expect(emptyFactory).toContain(`export var ɵNonEmptyModule = true;`);
+    expect(emptyFactory).toContain(`export const ɵNonEmptyModule = true;`);
   });
 
   it('should compile a banana-in-a-box inside of a template', () => {
@@ -657,4 +657,23 @@ describe('ngtsc behavioral tests', () => {
     expect(errorSpy).not.toHaveBeenCalled();
     expect(exitCode).toBe(0);
   });
+
+  describe('NgElement', () => {
+    it('should compile the NgElement Selector', () => {
+      writeConfig();
+      write('test.ts', `
+          import {NgElement} from '@angular/core';
+
+          @NgElement({
+            selector: 'test'
+          })
+          class TestCmp {}
+      `);
+      const exitCode = main(['-p', basePath], errorSpy);
+      const contents = getContents('test.js');
+      expect(errorSpy).not.toHaveBeenCalled();
+      console.log(contents);
+      expect(exitCode).toBe(0);
+    });
+  })
 });

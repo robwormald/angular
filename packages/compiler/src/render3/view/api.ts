@@ -186,3 +186,11 @@ export interface R3ComponentDef {
   expression: o.Expression;
   type: o.Type;
 }
+
+/**
+ * Output of render3 custom element compilation.
+ */
+export interface R3CustomElementDef {
+  expression: o.Expression;
+  type: o.Type;
+}

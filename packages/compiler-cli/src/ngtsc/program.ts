@@ -12,7 +12,7 @@ import * as ts from 'typescript';
 
 import * as api from '../transformers/api';
 
-import {ComponentDecoratorHandler, DirectiveDecoratorHandler, InjectableDecoratorHandler, NgModuleDecoratorHandler, PipeDecoratorHandler, ResourceLoader, SelectorScopeRegistry} from './annotations';
+import {ComponentDecoratorHandler, DirectiveDecoratorHandler, InjectableDecoratorHandler, NgModuleDecoratorHandler, PipeDecoratorHandler, ResourceLoader, SelectorScopeRegistry, NgElementDecoratorHandler} from './annotations';
 import {FactoryGenerator, FactoryInfo, GeneratedFactoryHostWrapper, generatedFactoryTransform} from './factories';
 import {TypeScriptReflectionHost} from './metadata';
 import {FileResourceLoader, HostResourceLoader} from './resource_loader';
@@ -175,6 +175,7 @@ export class NgtscProgram implements api.Program {
       new InjectableDecoratorHandler(this.reflector, this.isCore),
       new NgModuleDecoratorHandler(checker, this.reflector, scopeRegistry, this.isCore),
       new PipeDecoratorHandler(checker, this.reflector, scopeRegistry, this.isCore),
+      new NgElementDecoratorHandler(checker, this.reflector, scopeRegistry, this.isCore, this.resourceLoader),
     ];
 
     return new IvyCompilation(

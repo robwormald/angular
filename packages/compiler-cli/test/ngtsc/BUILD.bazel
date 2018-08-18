@@ -18,7 +18,7 @@ jasmine_node_test(
     name = "ngtsc",
     bootstrap = ["angular/tools/testing/init_node_no_angular_spec.js"],
     data = [
-        "//packages/compiler-cli/test/ngtsc/fake_core:npm_package",
+        "//packages/compiler-cli/test/ngtsc/fake_core:npm_package"
     ],
     deps = [
         ":ngtsc_lib",

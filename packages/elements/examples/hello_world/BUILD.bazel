@@ -11,7 +11,7 @@ ng_module(
     srcs = ["hello-world.ts"],
     tags = ["ivy-only"],
     deps = [
-        "//packages/elements/ng-element",
+        "//packages/elements/platform",
     ],
 )
 
@@ -20,7 +20,7 @@ ng_module(
     srcs = ["mdc-card.ts"],
     tags = ["ivy-only"],
     deps = [
-        "//packages/elements/ng-element",
+        "//packages/elements/platform",
     ],
 )
 
@@ -37,7 +37,7 @@ ng_rollup_bundle(
     deps = [
         ":hello_world",
         "//packages/core",
-        "//packages/elements/ng-element",
+        "//packages/elements/platform",
     ],
 )
 

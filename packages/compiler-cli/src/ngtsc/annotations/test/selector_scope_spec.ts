@@ -29,7 +29,7 @@ describe('SelectorScopeRegistry', () => {
         contents: `
         import {NgComponentDef, NgModuleDef} from '@angular/core';
         import * as i0 from './component';
-        
+
         export declare class SomeModule {
           static ngModuleDef: NgModuleDef<SomeModule, [typeof i0.SomeCmp], never, [typeof i0.SomeCmp]>;
         }

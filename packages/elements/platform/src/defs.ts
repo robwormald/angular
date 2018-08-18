@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import {defineNgTemplate} from './ng_template';
 export interface ShadowRootDef {
   mode: 'open' | 'closed';
   //TODO(robwormald) registry?
@@ -30,48 +29,24 @@ export interface NgElementRef {
 
 }
 
-export function upgradeNgElement<T extends HTMLElement>(ngElementDef:NgElementDef<T>, element:T){
-  if(ngElementDef.shadowRoot && !element.shadowRoot){
-    element.attachShadow({ mode: 'open' });
-  }
-}
-
-export interface NgElementDef<C> {
-  type: NgElementRenderType;
+export interface NgElementDef<E> {
+  type: any ;
   selector: string;
+  name: string;
   shadowRoot:ShadowRootDef | false;
-  template?:(rf:any, ctx:C) => void;
-  directiveDefs?:any[];
-  pipeDefs?:any[];
-  upgrade(elementDef:NgElementDef<C>, element:HTMLElement):void;
+  upgrade(element:HTMLElement, elementDef:NgElementDef<E>):void;
 }
 
 export interface AsyncNgElementDef<C> extends NgElementDef<C> {
   resolve(element:HTMLElement):Promise<NgElementDef<C>>;
 }
 
-export function defineNgElement<C>(ngElementDefInit:{
+export function defineNgElement<E>(ngElementDef:{
   selector:string;
-  type?: NgElementRenderType;
-  shadowRoot?: boolean | null;
-  directives?: any[];
-  pipes?:any[],
-  staticTemplate?:string | HTMLTemplateElement;
-  styles?: string[];
-  styleUrls?: string[];
+  type?:any;
+  name?:string;
   upgrade?:any;
-  resolve?: (element:HTMLElement) => Promise<NgElementDef<C>>
-}): NgElementDef<C> {
+}): NgElementDef<E> {
 
-  return ({
-    selector: ngElementDefInit.selector,
-    type: ngElementDefInit.type || NgElementRenderType.Static,
-    shadowRoot: !!ngElementDefInit.shadowRoot,
-    resolve: ngElementDefInit.resolve || false,
-    directiveDefs: ngElementDefInit.directives || [],
-    pipeDefs: ngElementDefInit.pipes || [],
-    styles: ngElementDefInit.styles || [],
-    styleUrls: ngElementDefInit.styleUrls || [],
-    upgrade: ngElementDefInit.upgrade || upgradeNgElement,
-  }) as NgElementDef<C> & AsyncNgElementDef<C>;
+  return ngElementDef as NgElementDef<E>;
 }

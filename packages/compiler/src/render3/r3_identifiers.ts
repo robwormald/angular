@@ -9,6 +9,7 @@
 import * as o from '../output/output_ast';
 
 const CORE = '@angular/core';
+const ELEMENTS = '@angular/elements/platform';
 
 export class Identifiers {
   /* Methods */
@@ -172,4 +173,14 @@ export class Identifiers {
   static sanitizeResourceUrl: o.ExternalReference = {name: 'ɵzr', moduleName: CORE};
   static sanitizeScript: o.ExternalReference = {name: 'ɵzc', moduleName: CORE};
   static sanitizeUrl: o.ExternalReference = {name: 'ɵzu', moduleName: CORE};
+
+
+}
+
+export class ElementIdentifiers {
+  //elements APIs
+  static NgElementDef: o.ExternalReference = { name: 'NgElementDef', moduleName: ELEMENTS }
+  static defineNgElement: o.ExternalReference = {name: 'defineNgElement', moduleName: ELEMENTS};
+
+  static attachShadowRoot: o.ExternalReference = { name: 'attachShadowRoot', moduleName: ELEMENTS }
 }

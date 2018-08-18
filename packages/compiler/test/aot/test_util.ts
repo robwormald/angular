@@ -605,12 +605,15 @@ export function isInBazel(): boolean {
 export function setup(options: {
   compileAngular: boolean,
   compileFakeCore?: boolean,
-  compileAnimations: boolean, compileCommon?: boolean
+  compileAnimations: boolean,
+  compileCommon?: boolean,
+  compileElements?: boolean
 } = {
   compileAngular: true,
   compileAnimations: true,
   compileCommon: false,
   compileFakeCore: false,
+  compileElements: false
 }) {
   let angularFiles = new Map<string, string>();
 
@@ -645,6 +648,12 @@ export function setup(options: {
         // If this fails please add //packages/common:npm_package as a test data dependency.
         readBazelWrittenFilesFrom(
             path.join(sources, 'angular/packages/common/npm_package'), 'common', angularFiles,
+            skipDirs);
+      }
+      if (options.compileElements) {
+        // If this fails please add //packages/common:npm_package as a test data dependency.
+        readBazelWrittenFilesFrom(
+            path.join(sources, 'angular/packages/elements/platform/npm_package'), 'elements', angularFiles,
             skipDirs);
       }
       return;

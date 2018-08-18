@@ -151,7 +151,7 @@ export function withNgElement<CEBase extends CustomElementConstructor<NgCustomEl
         //upgrade the element
         console.log('ngElement: upgrade');
         this._ngFlags |= ElementFlags.Upgrading;
-        elementDef.upgrade && elementDef.upgrade(elementDef, this);
+        elementDef.upgrade && elementDef.upgrade(this, elementDef);
         this.__ngUpgraded && this.__ngUpgraded();
       }
     }
