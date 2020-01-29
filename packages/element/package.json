@@ -1,0 +1,33 @@
+{
+  "name": "@angular/element",
+  "version": "0.0.0-PLACEHOLDER",
+  "description": "Angular - library for using Angular Components as Custom Elements",
+  "main": "./bundles/element.umd.js",
+  "module": "./fesm5/element.js",
+  "es2015": "./fesm2015/element.js",
+  "esm5": "./esm5/element.js",
+  "esm2015": "./esm2015/element.js",
+  "fesm5": "../fesm5/testing.js",
+  "fesm2015": "../fesm2015/testing.js",
+  "typings": "./element.d.ts",
+  "author": "angular",
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/core": "0.0.0-PLACEHOLDER",
+    "@angular/platform-browser": "0.0.0-PLACEHOLDER",
+    "rxjs": "^6.5.3",
+    "tslib": "^1.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/angular.git"
+  },
+  "ng-update": {
+    "packageGroup": "NG_UPDATE_PACKAGE_GROUP"
+  },
+  "sideEffects": false,
+  "schematics": "./schematics/collection.json",
+  "publishConfig":{
+    "registry":"https://wombat-dressing-room.appspot.com"
+  }
+}
