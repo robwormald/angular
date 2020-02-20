@@ -23,7 +23,7 @@ export type NgElementProps<T> = {
  export type NgElementMeta<T = {}> = Partial<NgElementDef<T>> & {
    selector: string;
    styles?: string[];
-   styleUrls: string[];
+   styleUrls?: string[];
 
  }
 

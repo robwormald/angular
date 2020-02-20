@@ -1,0 +1,50 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "pkg_web")
+load("@npm//http-server:index.bzl", "http_server")
+load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
+load("@npm_bazel_terser//:index.bzl", "terser_minified")
+load("@npm_bazel_typescript//:index.bzl", "ts_devserver")
+load("//tools:defaults.bzl", "ng_module", "ng_package", "ng_rollup_bundle", "ts_library")
+
+package(default_visibility = ["//visibility:private"])
+
+ts_library(
+  name = "simple_element",
+  srcs = ["index.ts"],
+  deps = [
+    "//packages/element",
+    "//packages/core"
+  ]
+)
+rollup_bundle(
+  name = "bundle",
+  entry_point = "index.ts",
+  config_file = "rollup.config.js",
+  deps = [
+    "//packages/core",
+    "//packages/element",
+    ":simple_element",
+    "@npm//rollup-plugin-commonjs",
+    "@npm//rollup-plugin-node-resolve",
+    "@npm//@angular-devkit/build-optimizer"
+  ]
+)
+
+terser_minified(
+    name = "bundle.min",
+    src = ":bundle",
+    config_file = "terser.config.json"
+)
+
+pkg_web(
+    name = "web_package",
+    srcs = [
+        "index.html",
+        ":bundle.min",
+    ],
+)
+
+http_server(
+    name = "prodserver",
+    data = [":web_package"],
+    templated_args = ["packages/element/examples/simple-element/web_package"],
+)

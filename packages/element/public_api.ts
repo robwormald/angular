@@ -12,5 +12,6 @@
  * Entry point for all public APIs of the `element` package.
  */
 export {NgHostElement} from './src/host_element';
+export * from './src/metadata';
 export * from './src/component_host';
 // This file only reexports content of the `src` folder. Keep it that way.
