@@ -13,6 +13,7 @@ export {ComponentDecoratorHandler} from './src/component';
 export {DirectiveDecoratorHandler} from './src/directive';
 export {InjectableDecoratorHandler} from './src/injectable';
 export {NgModuleDecoratorHandler} from './src/ng_module';
+export {NgElementDecoratorHandler} from './src/ng_element';
 export {PipeDecoratorHandler} from './src/pipe';
 export {NoopReferencesRegistry, ReferencesRegistry} from './src/references_registry';
 export {forwardRefResolver} from './src/util';

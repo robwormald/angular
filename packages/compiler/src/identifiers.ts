@@ -125,6 +125,9 @@ export class Identifiers {
   };
   static createComponentFactory: o.ExternalReference = {name: 'ɵccf', moduleName: CORE};
   static setClassMetadata: o.ExternalReference = {name: 'ɵsetClassMetadata', moduleName: CORE};
+
+  static createNgElementFactory: o.ExternalReference = {name: 'createNgElementFactory', moduleName: '@angular/element'};
+  static setNgElementMetadata: o.ExternalReference = {name: 'setClassMetadata', moduleName: '@angular/element'};
 }
 
 export function createTokenForReference(reference: any): CompileTokenMetadata {

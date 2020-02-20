@@ -9,7 +9,7 @@
 import {Type} from '@angular/compiler';
 import * as ts from 'typescript';
 
-import {ComponentDecoratorHandler, DirectiveDecoratorHandler, InjectableDecoratorHandler, NgModuleDecoratorHandler, NoopReferencesRegistry, PipeDecoratorHandler, ReferencesRegistry} from '../../annotations';
+import {ComponentDecoratorHandler, DirectiveDecoratorHandler, InjectableDecoratorHandler, NgModuleDecoratorHandler, NoopReferencesRegistry, PipeDecoratorHandler, NgElementDecoratorHandler, ReferencesRegistry} from '../../annotations';
 import {CycleAnalyzer, ImportGraph} from '../../cycles';
 import {ErrorCode, ngErrorCode} from '../../diagnostics';
 import {ReferenceGraph, checkForPrivateExports} from '../../entry_point';
@@ -674,6 +674,7 @@ export class NgCompiler {
           reflector, evaluator, metaReader, metaRegistry, scopeRegistry, referencesRegistry, isCore,
           routeAnalyzer, refEmitter, this.host.factoryTracker, defaultImportTracker,
           this.closureCompilerEnabled, injectableRegistry, this.options.i18nInLocale),
+      new NgElementDecoratorHandler(reflector, evaluator)
     ];
 
     const traitCompiler = new TraitCompiler(

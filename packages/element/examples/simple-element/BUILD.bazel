@@ -7,7 +7,7 @@ load("//tools:defaults.bzl", "ng_module", "ng_package", "ng_rollup_bundle", "ts_
 
 package(default_visibility = ["//visibility:private"])
 
-ts_library(
+ng_module(
   name = "simple_element",
   srcs = ["index.ts"],
   deps = [

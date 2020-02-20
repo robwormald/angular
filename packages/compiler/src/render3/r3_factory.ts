@@ -98,6 +98,7 @@ export enum R3FactoryTarget {
   Injectable = 2,
   Pipe = 3,
   NgModule = 4,
+  NgElement = 5
 }
 
 /**

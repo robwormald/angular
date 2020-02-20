@@ -2,14 +2,11 @@ import {NgElement, NgHostElement} from '@angular/element'
 
 
 @NgElement({
-  selector: 'simple-element'
+  selector: 'simple-element',
+  observedAttributes: ['name']
 })
 export class SimpleElement extends NgHostElement {
-  static observedAttributes = ['name']
-  constructor(){
-    super();
-    this.attachNgInternals();
-  }
+
 }
 
-customElements.define(SimpleElement.ngElementDef.selector, SimpleElement);
+customElements.define('simple-element', SimpleElement)

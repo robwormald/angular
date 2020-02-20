@@ -9,6 +9,7 @@
 import * as o from '../output/output_ast';
 
 const CORE = '@angular/core';
+const NG_ELEMENT = '@angular/element';
 
 export class Identifiers {
   /* Methods */
@@ -306,4 +307,9 @@ export class Identifiers {
   static sanitizeUrl: o.ExternalReference = {name: 'ɵɵsanitizeUrl', moduleName: CORE};
   static sanitizeUrlOrResourceUrl:
       o.ExternalReference = {name: 'ɵɵsanitizeUrlOrResourceUrl', moduleName: CORE};
+
+  static NgElementDefWithMeta: o.ExternalReference = {name: 'ElementDefWithMeta', moduleName: NG_ELEMENT};
+
+  static defineNgElement: o.ExternalReference = {name: 'defineNgElement', moduleName: NG_ELEMENT};
+
 }

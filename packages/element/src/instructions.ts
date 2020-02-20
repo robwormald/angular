@@ -6,3 +6,5 @@ export function createEvent(type: string, detail: any, options: EventInit){
 export function dispatchEvent(target: HTMLElement, event: CustomEvent){
   return target.dispatchEvent(event);
 }
+
+export function attachNgInternals(){}

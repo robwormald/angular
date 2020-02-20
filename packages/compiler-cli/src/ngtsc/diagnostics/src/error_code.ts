@@ -126,6 +126,9 @@ export enum ErrorCode {
    * An injectable already has a `ɵprov` property.
    */
   INJECTABLE_DUPLICATE_PROV = 9001,
+
+  NGELEMENT_MISSING_SELECTOR = 10001,
+  NGELEMENT_INVALID_SELECTOR = 10002
 }
 
 /**

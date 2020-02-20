@@ -27,6 +27,8 @@ export type NgElementProps<T> = {
 
  }
 
+ export interface ElementDefWithMeta {}
+
 
  export interface NgPropDef {
    name: string;
@@ -37,6 +39,14 @@ export type NgElementProps<T> = {
 
 const shadowRootDefaults: ShadowRootInit = {
   mode: 'open'
+}
+
+export function defineNgElement(meta: any){
+  return {...meta}
+}
+
+export function defineObservedAttributes(attrs: string[]){
+  return attrs;
 }
 
 export function compileElementDef<T>(elementMeta: NgElementMeta<T>): NgElementDef<T> {
