@@ -15,4 +15,5 @@ export {NgHostElement} from './src/host_element';
 export * from './src/metadata';
 export {defineNgElement} from './src/defs';
 export * from './src/component_host';
+export {defineCustomElement}from './src/utils';
 // This file only reexports content of the `src` folder. Keep it that way.

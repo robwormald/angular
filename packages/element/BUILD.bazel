@@ -1,8 +1,8 @@
-load("//tools:defaults.bzl", "ng_module", "ng_package")
+load("//tools:defaults.bzl", "ng_module", "ng_package", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
-ng_module(
+ts_library(
     name = "element",
     srcs = glob([
       "*.ts",

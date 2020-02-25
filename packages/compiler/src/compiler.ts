@@ -99,7 +99,7 @@ export {Identifiers as R3Identifiers} from './render3/r3_identifiers';
 export {R3DependencyMetadata, R3ResolvedDependencyType, compileFactoryFunction, R3FactoryMetadata, R3FactoryTarget} from './render3/r3_factory';
 export {compileInjector, compileNgModule, R3InjectorMetadata, R3NgModuleMetadata} from './render3/r3_module_compiler';
 export {compilePipeFromMetadata, R3PipeMetadata} from './render3/r3_pipe_compiler';
-export {compileNgElementFromMetadata, R3NgElementMetadata} from './render3/r3_element_compiler';
+export {compileNgElementFromMetadata, R3NgElementMetadata} from './render3/ng_element/compiler';
 export {makeBindingParser, parseTemplate, ParseTemplateOptions} from './render3/view/template';
 export {R3Reference} from './render3/util';
 export {compileComponentFromMetadata, compileDirectiveFromMetadata, parseHostBindings, ParsedHostBindings, verifyHostBindings} from './render3/view/compiler';

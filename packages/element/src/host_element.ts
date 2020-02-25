@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import {NgElementDef} from "./defs";
 
 const internalsCache = new WeakMap<NgHostElement, NgElementInternals>();
 
@@ -16,7 +15,7 @@ class NgElementHostInternals {
 
 type NgElementInternals = [
   ElementFlags,
-  NgElementDef,
+  any,
   any[]
 ];
 
@@ -31,9 +30,9 @@ const enum ElementFlags {
 export class NgHostElement<Props = {}> extends HTMLElement {
 
   static observedAttributes? : string[];
-  static ngElementDef: NgElementDef<{}>;
+  static ngElementDef: any;
 
-  private static __ngElementDef: NgElementDef<{}>;
+  private static __ngElementDef: any;
 
   protected ngOnUpgrade?(): void;
 

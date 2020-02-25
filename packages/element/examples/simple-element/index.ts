@@ -8,5 +8,3 @@ import {NgElement, NgHostElement} from '@angular/element'
 export class SimpleElement extends NgHostElement {
 
 }
-
-customElements.define('simple-element', SimpleElement)

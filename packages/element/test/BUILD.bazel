@@ -1,0 +1,51 @@
+load("//tools:defaults.bzl", "karma_web_test_suite", "ts_library", "ng_module")
+load("//tools/circular_dependency_test:index.bzl", "circular_dependency_test")
+load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
+
+circular_dependency_test(
+    name = "circular_deps_test",
+    entry_point = "angular/packages/element/index.js",
+    deps = ["//packages/element"],
+)
+
+ng_module(
+    name = "test_lib",
+    testonly = True,
+    srcs = glob(["**/*_spec.ts"]),
+    deps = [
+        "//packages:types",
+        "//packages/compiler",
+        "//packages/core",
+        "//packages/element",
+        "@npm//rxjs",
+    ],
+)
+
+rollup_bundle(
+  name = "bundle",
+  entry_point = "index_spec.ts",
+  config_file = "rollup.config.js",
+  deps = [
+   ":test_lib",
+    "@npm//rollup-plugin-node-resolve",
+    "@npm//rollup-plugin-commonjs",
+    "@npm//@angular-devkit/build-optimizer"
+  ],
+  testonly = True
+)
+
+filegroup(
+    name = "elements_test_bootstrap_scripts",
+    testonly = True,
+    # do not sort
+    srcs = [
+      ":bundle"
+    ],
+)
+
+karma_web_test_suite(
+    name = "test",
+    bootstrap = [
+        ":bundle",
+    ]
+)

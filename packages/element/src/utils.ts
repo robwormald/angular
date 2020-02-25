@@ -1,3 +1,5 @@
+import { NgHostElement } from "./host_element";
+
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.
@@ -34,4 +36,15 @@ export function validateSelector(selector: string): [boolean, string | undefined
     `]
   }
   return [true, undefined];
+}
+
+export function defineCustomElement(elementConstructor: typeof HTMLElement, waitFor?:Promise<any>){
+  const def = getElementDef(elementConstructor);
+  if(def && def.selector){
+    customElements.define(def.selector, elementConstructor);
+  }
+}
+
+export function getElementDef(elementConstructor: typeof HTMLElement){
+  return (elementConstructor as typeof NgHostElement).ngElementDef || null;
 }
